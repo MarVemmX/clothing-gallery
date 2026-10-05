@@ -1,0 +1,1178 @@
+:root {
+  --bg-primary: #f4f3ef;
+  --bg-secondary: #eae8e1;
+  --bg-card: #ffffff;
+  --text-main: #151515;
+  --text-muted: #787773;
+  --text-light: #9c9a94;
+  --border-subtle: #e4e2dc;
+  --border-strong: #c8c6be;
+  --rail-steel: #505255;
+  --rail-highlight: #8c8f94;
+  --rail-shadow: rgba(0, 0, 0, 0.12);
+  --shadow-floor: radial-gradient(ellipse 65% 50% at 50% 50%, rgba(30, 28, 24, 0.14) 0%, rgba(30, 28, 24, 0) 70%);
+  --accent-black: #121212;
+  --accent-gold: #c5a059;
+  
+  --font-body: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: var(--font-display), "Playfair Display", Georgia, serif;
+  --font-logo: var(--font-syne), "Syne", -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+::selection {
+  background: #151515;
+  color: #f4f3ef;
+}
+
+/* Master Layout */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100vw;
+  position: relative;
+  background-color: var(--bg-primary);
+  overflow: hidden;
+}
+
+/* TOP NAVBAR */
+.top-nav {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 18px 48px;
+  border-bottom: 1px solid var(--border-subtle);
+  background-color: var(--bg-primary);
+  z-index: 50;
+  position: relative;
+}
+
+.brand-logo {
+  font-family: var(--font-logo);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--text-main);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.brand-logo:hover {
+  opacity: 0.85;
+}
+
+.brand-logo .dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--text-main);
+  border-radius: 50%;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+
+.nav-link {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--text-main);
+  text-decoration: none;
+  position: relative;
+  padding-bottom: 6px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--text-main);
+}
+
+.nav-link.secondary {
+  color: var(--text-muted);
+}
+
+.nav-link.secondary:hover {
+  color: var(--text-main);
+}
+
+.nav-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+.pill-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-strong);
+  background-color: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pill-toggle:hover {
+  border-color: var(--text-main);
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.pill-toggle.active {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.icon-sound {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  cursor: pointer;
+  color: var(--text-main);
+  transition: all 0.2s ease;
+}
+
+.icon-sound:hover {
+  border-color: var(--text-main);
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* EDITORIAL SUBHEADER */
+.editorial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 26px 64px 8px 64px;
+  position: relative;
+  z-index: 40;
+}
+
+.collection-heading-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.main-title {
+  font-family: var(--font-body);
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--text-main);
+  line-height: 1.1;
+}
+
+.back-to-rail-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-main);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: opacity 0.2s, transform 0.2s;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.back-to-rail-btn:hover {
+  opacity: 0.7;
+  transform: translateX(-3px);
+}
+
+.rail-metadata {
+  text-align: right;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.rail-metadata .title {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+/* MAIN RUNWAY / CLOTHES RAIL AREA */
+.runway-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  min-height: 510px;
+  width: 100%;
+  overflow: visible;
+}
+
+/* The Horizontal Clothes Rail Rod - FIXED at top: 60px across entire stage */
+.metallic-rod {
+  position: absolute;
+  top: 60px;
+  left: 28px;
+  right: 28px;
+  height: 8px;
+  background: linear-gradient(180deg, #717378 0%, #3e4043 45%, #1c1d1f 100%);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.45);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.metallic-rod::before,
+.metallic-rod::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #8e9196 0%, #303133 65%, #121314 100%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.metallic-rod::before {
+  left: -9px;
+}
+
+.metallic-rod::after {
+  right: -9px;
+}
+
+/* Ambient Occlusion Floor Shadow Underneath Rack */
+.ambient-floor-shadow {
+  position: absolute;
+  bottom: 25px;
+  left: 6%;
+  right: 6%;
+  height: 48px;
+  background: var(--shadow-floor);
+  filter: blur(8px);
+  pointer-events: none;
+  z-index: 5;
+  transition: opacity 0.5s ease;
+}
+
+/* RAIL SCROLL CAROUSEL CONTAINER */
+.clothes-rail-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+}
+
+/* Contained strictly inside the metallic rod finials so clothes NEVER overflow! */
+.rail-viewport {
+  position: absolute;
+  top: 0;
+  left: 48px;
+  right: 48px;
+  height: 100%;
+  overflow: hidden;
+  cursor: grab;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 50px, black calc(100% - 50px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 50px, black calc(100% - 50px), transparent 100%);
+}
+
+.rail-viewport:active {
+  cursor: grabbing;
+}
+
+/* The moving rail track starting at left: 0 inside rail-viewport */
+.rail-track {
+  display: flex;
+  align-items: flex-start;
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* INDIVIDUAL GARMENT ITEM ON THE RAIL */
+.garment-card {
+  position: relative;
+  flex: 0 0 170px;
+  height: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  /* Hook throat inside loop aligns precisely with metallic rod at top: 60px */
+  margin-top: 28px;
+  z-index: 15;
+  transform-origin: top center;
+  transform-style: preserve-3d;
+  transition: z-index 0.2s ease, opacity 0.35s ease;
+}
+
+/* The visual wrapper holding the dual front and back faces of the senator attire
+   3D perspective with continuous organic ease-in/ease-out spring physics */
+.garment-visual-wrapper {
+  position: relative;
+  width: 260px;
+  height: 350px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  transform-origin: top center;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.garment-visual-wrapper .card-face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.garment-visual-wrapper .card-face.face-front {
+  transform: rotateY(0deg);
+}
+
+.garment-visual-wrapper .card-face.face-back {
+  transform: rotateY(180deg);
+}
+
+.garment-visual-wrapper .garment-img {
+  max-height: 380px;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.16));
+  transition: filter 0.4s ease;
+  pointer-events: none;
+  user-select: none;
+}
+
+.garment-card:hover .garment-visual-wrapper .garment-img,
+.garment-card.hovered .garment-visual-wrapper .garment-img {
+  filter: drop-shadow(0 24px 34px rgba(0, 0, 0, 0.26));
+}
+
+.garment-card:hover,
+.garment-card.hovered {
+  z-index: 50;
+}
+
+/* =========================================================
+   DETAIL INSPECTION MODE (WHEN GARMENT IS CLICKED)
+   Hook is directly hooked onto the metallic rod at top: 60px!
+   ========================================================= */
+.detail-garment-stage {
+  position: absolute;
+  top: 25px; /* Hook inside curve rests at 60px directly on the metallic rod! */
+  left: calc(50% - 330px);
+  width: 320px;
+  height: 450px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  z-index: 25;
+  perspective: 1400px;
+  touch-action: none;
+}
+
+/* Dynamic Physical Size Scaler with top-center origin */
+.scaled-silhouette-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-origin: top center; /* Keeps hanger hook locked to the rod during size scaling */
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.4, 1.15);
+}
+
+/* 3D Controlled Rotatable Card */
+.turnable-card-3d {
+  position: relative;
+  width: 320px;
+  height: 450px;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.25, 1);
+  cursor: grab;
+  will-change: transform;
+}
+
+.turnable-card-3d.dragging {
+  transition: none;
+  cursor: grabbing;
+}
+
+.card-face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.card-face.face-back {
+  transform: rotateY(180deg);
+}
+
+.card-face img {
+  max-height: 420px;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.16));
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Right Side: Luxury Product Panel */
+.detail-info-panel {
+  position: absolute;
+  top: 70px;
+  left: calc(50% + 50px);
+  width: min(440px, 40vw);
+  display: flex;
+  flex-direction: column;
+  z-index: 30;
+  animation: slidePanelIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slidePanelIn {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.panel-series {
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  text-transform: capitalize;
+}
+
+.panel-title {
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+  line-height: 1.15;
+  margin-bottom: 10px;
+}
+
+.panel-price {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-main);
+  margin-bottom: 22px;
+}
+
+/* Front / Back Angle Switch */
+.view-switch-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.view-btn {
+  padding: 7px 18px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-btn.active {
+  background: var(--text-main);
+  color: #ffffff;
+  border-color: var(--text-main);
+}
+
+.view-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-left: 8px;
+}
+
+/* Color Status & Stock */
+.color-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+.color-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.color-dot-small {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.stock-status {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+/* Size Selection Box Row */
+.size-selector-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0;
+  border: 1px solid var(--border-strong);
+  margin-bottom: 20px;
+  background: #ffffff;
+}
+
+.size-btn {
+  padding: 10px 0;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-main);
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--border-strong);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-transform: lowercase;
+}
+
+.size-btn:last-child {
+  border-right: none;
+}
+
+.size-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.size-btn.active {
+  background: var(--text-main);
+  color: #ffffff;
+}
+
+/* Primary CTA Button */
+.cta-button {
+  width: 100%;
+  padding: 14px 24px;
+  background: var(--text-main);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.cta-button:hover {
+  background: #2b2b2b;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Illustrative disclaimers */
+.panel-disclaimer {
+  font-size: 11px;
+  color: var(--text-light);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.panel-order-info {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* =========================================================
+   BOTTOM CONTROLS BAR
+   ========================================================= */
+.bottom-controls-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 48px 24px 48px;
+  position: relative;
+  z-index: 50;
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.collection-counter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-main);
+  letter-spacing: 0.05em;
+}
+
+.counter-dash {
+  width: 24px;
+  height: 1px;
+  background-color: var(--border-strong);
+}
+
+.counter-total {
+  color: var(--text-light);
+}
+
+.center-control-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.status-piece-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  letter-spacing: 0.01em;
+}
+
+.status-piece-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.color-dots-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.swatch-dot-button {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.swatch-dot-button:hover {
+  transform: scale(1.25);
+}
+
+.swatch-dot-fill {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.swatch-dot-button.active::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--text-main);
+  border-radius: 50%;
+}
+
+.swatch-dot-button.active .swatch-dot-fill {
+  transform: scale(1.1);
+}
+
+.nav-arrows-group {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.circle-nav-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.circle-nav-btn:hover {
+  border-color: var(--text-main);
+  background: rgba(0, 0, 0, 0.04);
+  transform: scale(1.05);
+}
+
+.circle-nav-btn:active {
+  transform: scale(0.95);
+}
+
+.circle-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   COMMISSION / BESPOKE MEASUREMENT MODAL
+   ========================================================= */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(18, 18, 18, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn 0.25s ease forwards;
+}
+
+.modal-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 36px;
+  border-radius: 4px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.16);
+  position: relative;
+  animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  color: var(--text-main);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.15s;
+}
+
+.modal-close-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.modal-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.modal-garment-summary {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--bg-primary);
+  border-radius: 4px;
+  margin-bottom: 24px;
+}
+
+.modal-garment-thumb {
+  width: 54px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.modal-field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.form-input {
+  padding: 10px 14px;
+  border: 1px solid var(--border-strong);
+  font-size: 13px;
+  font-family: var(--font-body);
+  background: #ffffff;
+  color: var(--text-main);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus {
+  border-color: var(--text-main);
+}
+
+.modal-submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--text-main);
+  color: #ffffff;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.modal-submit-btn:hover {
+  background: #2b2b2b;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN (TABLET & MOBILE)
+   ========================================================= */
+@media (max-width: 1024px) {
+  .editorial-header {
+    padding: 22px 36px 8px 36px;
+  }
+  .metallic-rod {
+    left: 20px;
+    right: 20px;
+  }
+  .rail-viewport {
+    left: 36px;
+    right: 36px;
+  }
+  .garment-card {
+    flex: 0 0 150px;
+  }
+  .detail-garment-stage {
+    left: 4%;
+    width: 280px;
+  }
+  .detail-info-panel {
+    left: calc(4% + 300px);
+    width: calc(96% - 320px);
+  }
+  .bottom-controls-bar {
+    padding: 16px 36px 20px 36px;
+  }
+}
+
+@media (max-width: 768px) {
+  .top-nav {
+    padding: 12px 18px;
+  }
+  .brand-logo {
+    font-size: 18px;
+  }
+  .editorial-header {
+    padding: 16px 18px 4px 18px;
+  }
+  .main-title {
+    font-size: 24px;
+  }
+  .rail-metadata {
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .runway-stage {
+    min-height: 420px;
+    padding-bottom: 12px;
+  }
+
+  /* Fixed rod and finials on mobile - top: 48px */
+  .metallic-rod {
+    top: 48px;
+    left: 14px;
+    right: 14px;
+    height: 6px;
+  }
+  .metallic-rod::before,
+  .metallic-rod::after {
+    top: -3px;
+    width: 12px;
+    height: 12px;
+  }
+  .metallic-rod::before {
+    left: -6px;
+  }
+  .metallic-rod::after {
+    right: -6px;
+  }
+
+  /* Contained viewport strictly within the rod finials */
+  .rail-viewport {
+    left: 22px;
+    right: 22px;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 28px, black calc(100% - 28px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 28px, black calc(100% - 28px), transparent 100%);
+  }
+
+  .clothes-rail-wrapper {
+    min-height: 380px;
+  }
+
+  .garment-card {
+    flex: 0 0 135px;
+    height: 360px;
+    margin-top: 26px; /* 26px + 22px hook curve = 48px: sits directly on the rod */
+  }
+
+  .garment-visual-wrapper {
+    width: 200px;
+    height: 260px;
+  }
+
+  .ambient-floor-shadow {
+    bottom: 12px;
+    left: 4%;
+    right: 4%;
+    height: 28px;
+  }
+
+  /* DETAIL MODE ON MOBILE: Elegant vertical stack */
+  .detail-garment-stage {
+    position: relative;
+    top: 20px;
+    left: 0;
+    width: 100%;
+    height: 320px;
+    margin-bottom: 10px;
+  }
+  .turnable-card-3d {
+    width: 100%;
+    max-width: 290px;
+    height: 320px;
+  }
+  .detail-info-panel {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-width: 100%;
+    padding: 0 18px 24px 18px;
+    animation: fadeIn 0.3s ease forwards;
+  }
+  .panel-title {
+    font-size: 26px;
+  }
+  .panel-price {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+  .view-switch-row {
+    margin-bottom: 16px;
+  }
+  .size-selector-row {
+    margin-bottom: 16px;
+  }
+
+  /* BOTTOM CONTROLS ON MOBILE */
+  .bottom-controls-bar {
+    padding: 12px 16px 18px 16px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .collection-counter {
+    order: 1;
+    font-size: 11px;
+    gap: 8px;
+  }
+  .counter-dash {
+    width: 16px;
+  }
+  .nav-arrows-group {
+    order: 2;
+    gap: 6px;
+  }
+  .circle-nav-btn {
+    width: 34px;
+    height: 34px;
+  }
+  .center-control-group {
+    order: 3;
+    width: 100%;
+    gap: 4px;
+  }
+  .color-dots-nav {
+    gap: 10px;
+  }
+
+  /* MODAL ON MOBILE */
+  .modal-backdrop {
+    padding: 16px;
+  }
+  .modal-card {
+    padding: 24px 18px;
+    max-width: 100%;
+  }
+  .modal-field-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .top-nav {
+    padding: 10px 14px;
+  }
+  .nav-links {
+    display: none;
+  }
+  .pill-toggle {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+  .icon-sound {
+    width: 30px;
+    height: 30px;
+  }
+  .editorial-header {
+    padding: 12px 14px 4px 14px;
+  }
+  .main-title {
+    font-size: 20px;
+  }
+  .metallic-rod {
+    top: 44px;
+    left: 10px;
+    right: 10px;
+    height: 5px;
+  }
+  .rail-viewport {
+    left: 16px;
+    right: 16px;
+  }
+  .garment-card {
+    margin-top: 22px;
+    flex: 0 0 120px;
+  }
+  .bottom-controls-bar {
+    padding: 10px 12px 16px 12px;
+  }
+  .circle-nav-btn {
+    width: 32px;
+    height: 32px;
+  }
+  .size-btn {
+    padding: 8px 0;
+    font-size: 11px;
+  }
+}
