@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { CategoryId, CategoryInfo } from '../types/clothing';
-import { playSoftClick } from '../utils/audio';
+import { playSoftClick, setSoundEnabled } from '../utils/audio';
 
 interface HeaderProps {
   categories: CategoryInfo[];
@@ -72,10 +72,14 @@ export default function Header({
       <div className="nav-actions">
         {/* Sound toggle */}
         <button
-          className="icon-sound"
+          className={`icon-sound ${soundOn ? 'sound-active' : 'sound-muted'}`}
           onClick={() => {
-            playSoftClick();
-            setSoundOn(!soundOn);
+            const nextSound = !soundOn;
+            setSoundEnabled(nextSound);
+            setSoundOn(nextSound);
+            if (nextSound) {
+              playSoftClick();
+            }
           }}
           title={soundOn ? 'Mute audio cues' : 'Unmute audio cues'}
           aria-label="Toggle Sound"

@@ -3,27 +3,52 @@
 let audioCtx: AudioContext | null = null;
 let soundEnabled = true;
 
+// Initialize soundEnabled from localStorage if available in client environment
+if (typeof window !== 'undefined') {
+  try {
+    const saved = localStorage.getItem('arewa_sound_enabled');
+    if (saved !== null) {
+      soundEnabled = saved === 'true';
+    }
+  } catch {}
+}
+
+export function setSoundEnabled(enabled: boolean): void {
+  soundEnabled = Boolean(enabled);
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem('arewa_sound_enabled', String(soundEnabled));
+    } catch {}
+  }
+  if (!soundEnabled && audioCtx && audioCtx.state === 'running') {
+    try {
+      audioCtx.suspend();
+    } catch {}
+  }
+}
+
+export function toggleSound(): boolean {
+  setSoundEnabled(!soundEnabled);
+  return soundEnabled;
+}
+
+export function isSoundEnabled(): boolean {
+  return soundEnabled;
+}
+
 function getAudioContext(): AudioContext | null {
   if (typeof window === 'undefined') return null;
+  if (!soundEnabled) return null;
   if (!audioCtx) {
     const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     if (AudioContextClass) {
       audioCtx = new AudioContextClass();
     }
   }
-  if (audioCtx && audioCtx.state === 'suspended') {
+  if (audioCtx && audioCtx.state === 'suspended' && soundEnabled) {
     audioCtx.resume();
   }
   return audioCtx;
-}
-
-export function toggleSound(): boolean {
-  soundEnabled = !soundEnabled;
-  return soundEnabled;
-}
-
-export function isSoundEnabled(): boolean {
-  return soundEnabled;
 }
 
 // Gentle metallic hanger hook clink on rod

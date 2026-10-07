@@ -859,12 +859,12 @@ export const ALL_GARMENTS: GarmentDesign[] = [
 
 export function getGarmentsByCategory(categoryId: string): GarmentDesign[] {
   if (categoryId === 'all') {
-    // Showroom Mix: curated selection featuring key pieces from every collection
+    // Showroom Mix: Kano Terracotta Senator first on load, followed by key pieces
     const selectedIds = [
+      'senator-01',
       'suit-tuxedo',
       'casual-hoodie',
       'denim-selvedge',
-      'senator-01',
       'suit-savile',
       'casual-cargo',
       'denim-vintage',

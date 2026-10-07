@@ -11,12 +11,33 @@ import RealLifeModelCard from '../components/RealLifeModelCard';
 import CartDrawer from '../components/CartDrawer';
 import { CATEGORIES, SIZES, getGarmentsByCategory, ALL_GARMENTS } from '../data/clothing';
 import { CategoryId, GarmentDesign, ColorVariant, SizeOption, CartItem } from '../types/clothing';
-import { playFabricSwoosh, playRailClink, playSoftClick } from '../utils/audio';
+import { playFabricSwoosh, playRailClink, playSoftClick, setSoundEnabled } from '../utils/audio';
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState<CategoryId>('all');
   const [motionEnabled, setMotionEnabled] = useState(true);
   const [soundOn, setSoundOn] = useState(true);
+
+  // Sync initial sound state from localStorage on client mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('arewa_sound_enabled');
+        if (saved !== null) {
+          const enabled = saved === 'true';
+          setSoundOn(enabled);
+          setSoundEnabled(enabled);
+          return;
+        }
+      } catch {}
+      setSoundEnabled(true);
+    }
+  }, []);
+
+  // Guarantee global audio synthesis state strictly matches soundOn
+  useEffect(() => {
+    setSoundEnabled(soundOn);
+  }, [soundOn]);
 
   // Responsive mobile detection (3 garments on mobile, 5 on desktop)
   const [isMobile, setIsMobile] = useState(false);

@@ -3,27 +3,51 @@
 let audioCtx = null;
 let soundEnabled = true;
 
+if (typeof window !== 'undefined') {
+  try {
+    const saved = localStorage.getItem('arewa_sound_enabled');
+    if (saved !== null) {
+      soundEnabled = saved === 'true';
+    }
+  } catch {}
+}
+
+export function setSoundEnabled(enabled) {
+  soundEnabled = Boolean(enabled);
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem('arewa_sound_enabled', String(soundEnabled));
+    } catch {}
+  }
+  if (!soundEnabled && audioCtx && audioCtx.state === 'running') {
+    try {
+      audioCtx.suspend();
+    } catch {}
+  }
+}
+
+export function toggleSound() {
+  setSoundEnabled(!soundEnabled);
+  return soundEnabled;
+}
+
+export function isSoundEnabled() {
+  return soundEnabled;
+}
+
 function getAudioContext() {
   if (typeof window === 'undefined') return null;
+  if (!soundEnabled) return null;
   if (!audioCtx) {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (AudioContextClass) {
       audioCtx = new AudioContextClass();
     }
   }
-  if (audioCtx && audioCtx.state === 'suspended') {
+  if (audioCtx && audioCtx.state === 'suspended' && soundEnabled) {
     audioCtx.resume();
   }
   return audioCtx;
-}
-
-export function toggleSound() {
-  soundEnabled = !soundEnabled;
-  return soundEnabled;
-}
-
-export function isSoundEnabled() {
-  return soundEnabled;
 }
 
 // Gentle metallic hanger hook clink on rod
