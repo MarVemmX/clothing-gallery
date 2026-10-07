@@ -8,6 +8,12 @@ export const CATEGORIES: CategoryInfo[] = [
     badge: 'Curated Showroom'
   },
   {
+    id: 'senators',
+    name: 'Nigerian Senators',
+    tagline: 'Royal Monarch Heritage · Hand-Embroidered Architectural Tunics',
+    badge: 'Royal Heritage'
+  },
+  {
     id: 'suits',
     name: 'Suits & Tuxedos',
     tagline: 'English Bespoke · Peak Lapel Tuxedos & Savile Row Three-Piece Cuts',
@@ -24,12 +30,6 @@ export const CATEGORIES: CategoryInfo[] = [
     name: 'Strictly Denim',
     tagline: 'Japanese Selvedge & Vintage Stonewashed Artisanal Denim',
     badge: 'Artisan Denim'
-  },
-  {
-    id: 'senators',
-    name: 'Nigerian Senators',
-    tagline: 'Royal Monarch Heritage · Hand-Embroidered Architectural Tunics',
-    badge: 'Royal Heritage'
   }
 ];
 

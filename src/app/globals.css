@@ -1815,6 +1815,13 @@ html, body {
   cursor: not-allowed;
 }
 
+.circle-nav-btn svg {
+  display: block;
+  flex-shrink: 0;
+  stroke: currentColor;
+  color: inherit;
+}
+
 /* =========================================================
    COMMISSION / BESPOKE MEASUREMENT MODAL
    ========================================================= */
@@ -2238,50 +2245,6 @@ html, body {
     min-height: auto;
   }
 
-  /* FLOATING BUTTONS IN ATELIER STUDIO ON MOBILE: Icons only! No text required */
-  .studio-top-floating-bar {
-    top: 14px;
-    left: 14px;
-    right: 14px;
-    gap: 8px;
-  }
-  .studio-back-rail-floating {
-    width: 38px;
-    height: 38px;
-    padding: 0;
-    border-radius: 50%;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-  }
-  .studio-back-rail-floating span {
-    display: none !important;
-  }
-
-  .studio-cart-floating {
-    width: 38px;
-    height: 38px;
-    padding: 0;
-    border-radius: 50%;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-  }
-  .studio-cart-floating > span:not(.floating-cart-count) {
-    display: none !important;
-  }
-  .studio-cart-floating .floating-cart-count {
-    position: absolute;
-    top: -3px;
-    right: -3px;
-    min-width: 17px;
-    height: 17px;
-    padding: 0 4px;
-    font-size: 9.5px;
-  }
 
   .studio-visual-column {
     flex: 0 0 auto;
@@ -3442,6 +3405,7 @@ html, body {
   pointer-events: auto;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   padding: 9px 18px;
   border-radius: 9999px;
@@ -3454,6 +3418,8 @@ html, body {
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   transition: all 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .studio-back-rail-floating:hover {
@@ -3466,6 +3432,7 @@ html, body {
   pointer-events: auto;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   padding: 9px 18px;
   border-radius: 9999px;
@@ -3478,12 +3445,24 @@ html, body {
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   transition: all 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .studio-cart-floating:hover {
   transform: translateY(-1px);
   background: #ffffff;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.studio-back-rail-floating .floating-btn-icon,
+.studio-cart-floating .floating-btn-icon,
+.studio-back-rail-floating svg,
+.studio-cart-floating svg {
+  display: block;
+  flex-shrink: 0;
+  color: var(--text-main);
+  stroke: var(--text-main);
 }
 
 .floating-cart-count {
@@ -3498,4 +3477,123 @@ html, body {
   color: #ffffff;
   font-size: 10.5px;
   font-weight: 700;
+}
+
+/* ========================================================
+   FLOATING DETAIL STUDIO CONTROLS - MOBILE OVERRIDES
+   Ensures icons are clearly visible as circular action buttons
+   ======================================================== */
+@media (max-width: 768px) {
+  .studio-top-floating-bar {
+    top: 14px !important;
+    left: 14px !important;
+    right: 14px !important;
+    gap: 10px !important;
+    padding: 0 !important;
+  }
+
+  .studio-back-rail-floating,
+  .studio-cart-floating {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+    max-width: 42px !important;
+    max-height: 42px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    display: inline-flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    background: #ffffff !important;
+    border: 1.5px solid rgba(0, 0, 0, 0.14) !important;
+    color: #121314 !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12) !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+    cursor: pointer !important;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .studio-back-rail-floating:hover,
+  .studio-cart-floating:hover {
+    background: #f7f7f8 !important;
+    transform: none !important;
+  }
+
+  .studio-back-rail-floating .floating-btn-icon,
+  .studio-cart-floating .floating-btn-icon,
+  .studio-back-rail-floating svg,
+  .studio-cart-floating svg {
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    min-height: 20px !important;
+    display: block !important;
+    flex-shrink: 0 !important;
+    stroke: #121314 !important;
+    color: #121314 !important;
+    stroke-width: 2.5 !important;
+    margin: auto !important;
+    pointer-events: none !important;
+  }
+
+  /* Hide the text labels strictly on mobile */
+  .studio-back-rail-floating > span:not(.floating-btn-icon) {
+    display: none !important;
+  }
+
+  .studio-cart-floating > span:not(.floating-cart-count):not(.floating-btn-icon) {
+    display: none !important;
+  }
+
+  .studio-cart-floating .floating-cart-count {
+    position: absolute !important;
+    top: -4px !important;
+    right: -4px !important;
+    min-width: 18px !important;
+    height: 18px !important;
+    padding: 0 4px !important;
+    border-radius: 9999px !important;
+    background: #121314 !important;
+    color: #ffffff !important;
+    font-size: 9.5px !important;
+    font-weight: 700 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 2px solid #ffffff !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+    pointer-events: none !important;
+    z-index: 2 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .studio-top-floating-bar {
+    top: 12px !important;
+    left: 12px !important;
+    right: 12px !important;
+  }
+
+  .studio-back-rail-floating,
+  .studio-cart-floating {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    max-width: 40px !important;
+    max-height: 40px !important;
+  }
+
+  .studio-back-rail-floating .floating-btn-icon,
+  .studio-cart-floating .floating-btn-icon,
+  .studio-back-rail-floating svg,
+  .studio-cart-floating svg {
+    width: 19px !important;
+    height: 19px !important;
+    min-width: 19px !important;
+    min-height: 19px !important;
+  }
 }
