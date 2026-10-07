@@ -15,7 +15,7 @@ export default function GarmentDetailPanel({
   if (!garment) return null;
 
   return (
-    <aside className="detail-info-panel">
+    <aside className="detail-info-panel" key={garment.id}>
       {/* Series Tag */}
       <span className="panel-series">{garment.series}</span>
 
@@ -63,7 +63,7 @@ export default function GarmentDetailPanel({
       {/* Size Selector Box Row */}
       <div className="size-selector-row">
         {SIZES.map((size) => {
-          const isActive = currentSize.key === size.key;
+          const isActive = (currentSize?.key || currentSize?.id) === (size.key || size.id);
           return (
             <button
               key={size.key}

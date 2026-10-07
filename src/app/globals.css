@@ -225,6 +225,43 @@ html, body {
   transform: translateX(-3px);
 }
 
+.editorial-subtitle-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.editorial-more-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-main);
+  background: #ffffff;
+  border: 1px solid var(--border-strong);
+  padding: 3px 10px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.25, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.editorial-more-toggle-btn:hover {
+  background: var(--text-main);
+  color: #ffffff;
+  border-color: var(--text-main);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.editorial-more-toggle-btn .toggle-symbol {
+  font-size: 12px;
+  line-height: 1;
+}
+
 .rail-metadata {
   text-align: right;
   font-size: 12px;
@@ -389,6 +426,8 @@ html, body {
 }
 
 .garment-visual-wrapper .garment-img {
+  width: auto;
+  height: auto;
   max-height: 380px;
   object-fit: contain;
   filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.16));
@@ -405,6 +444,402 @@ html, body {
 .garment-card:hover,
 .garment-card.hovered {
   z-index: 50;
+}
+
+/* =========================================================
+   LUXURY SHOWROOM RAIL TRANSITIONS (SMOOTH EASE-IN & EASE-OUT)
+   ========================================================= */
+
+/* 1. Advancing Forward (Slide Next):
+   - Leftmost garment smoothly glides left, tilts slightly, and dissolves into the vault
+   - Mid garments glide smoothly left by 1 clothes spacing
+   - Incoming garment glides in from the right with a velvety ease-in
+   - '+' circle button shifts left alongside
+*/
+.garment-card.cloth-slide-out-left {
+  animation: clothSlideOutLeft 0.44s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+  pointer-events: none;
+}
+
+@keyframes clothSlideOutLeft {
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+  35% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: translateX(calc(var(--card-spacing, 220px) * -1)) scale(0.86);
+    opacity: 0;
+    filter: blur(5px);
+  }
+}
+
+.garment-card.cloth-shift-left {
+  animation: clothShiftLeft 0.44s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+}
+
+@keyframes clothShiftLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(var(--card-spacing, 220px) * -1));
+  }
+}
+
+.garment-card.cloth-slide-in-right {
+  animation: clothSlideInRight 0.44s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+@keyframes clothSlideInRight {
+  0% {
+    transform: translateX(0) scale(0.88);
+    opacity: 0;
+    filter: blur(6px);
+  }
+  30% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translateX(calc(var(--card-spacing, 220px) * -1)) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* 2. Reversing Backward (Slide Prev):
+   - Incoming garment glides in from the left with a velvety ease-in
+   - Mid garments glide smoothly right by 1 clothes spacing
+   - Rightmost garment glides right, dissolves into the vault
+   - '+' circle button shifts right alongside
+*/
+.garment-card.cloth-slide-in-left {
+  animation: clothSlideInLeft 0.44s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+@keyframes clothSlideInLeft {
+  0% {
+    transform: translateX(calc(var(--card-spacing, 220px) * -1)) scale(0.88);
+    opacity: 0;
+    filter: blur(6px);
+  }
+  30% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+.garment-card.cloth-shift-right {
+  animation: clothShiftRight 0.44s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+}
+
+@keyframes clothShiftRight {
+  0% {
+    transform: translateX(calc(var(--card-spacing, 220px) * -1));
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.garment-card.cloth-slide-out-right {
+  animation: clothSlideOutRight 0.44s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+  pointer-events: none;
+}
+
+@keyframes clothSlideOutRight {
+  0% {
+    transform: translateX(calc(var(--card-spacing, 220px) * -1)) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+  35% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: translateX(0) scale(0.86);
+    opacity: 0;
+    filter: blur(5px);
+  }
+}
+
+/* 3. Direct Swatch Jump Cross-fade */
+.rail-track.is-fading-switch {
+  animation: railTrackFadeSwitch 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes railTrackFadeSwitch {
+  0% {
+    opacity: 0.25;
+    transform: scale(0.98);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
+
+/* 4. Detail Mode Garment Transition (when switching pieces in inspection mode) */
+.detail-garment-enter {
+  animation: detailGarmentEnter 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes detailGarmentEnter {
+  0% {
+    opacity: 0.2;
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* =========================================================
+   MINIMALIST "+" CIRCLE ON THE RAIL (WITH PULSING BADGE)
+   ========================================================= */
+.rack-circle-more-card {
+  position: relative;
+  height: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  margin-top: 28px;
+  z-index: 25;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), z-index 0.2s ease;
+}
+
+.rack-circle-visual {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.rack-circle-hook-wrap {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  z-index: 12;
+}
+
+.rack-circle-hook-svg {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+}
+
+.rack-circle-btn-container {
+  position: relative;
+  margin-top: -6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* The Circle Button (48px) */
+.rack-circle-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #141414;
+  border: 1.5px solid var(--accent-gold);
+  color: var(--accent-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22), 0 2px 6px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  position: relative;
+  cursor: pointer;
+}
+
+.rack-circle-more-card:hover .rack-circle-btn {
+  transform: scale(1.14);
+  background: var(--accent-gold);
+  color: #121212;
+  border-color: #ffffff;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.35), 0 0 24px rgba(197, 160, 89, 0.45);
+}
+
+.rack-circle-more-card.is-expanded .rack-circle-btn {
+  background: #242424;
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #e5e7eb;
+}
+
+.rack-circle-more-card.is-expanded:hover .rack-circle-btn {
+  background: #121212;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.3);
+}
+
+.rack-circle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.rack-circle-more-card:hover .rack-circle-icon {
+  transform: rotate(90deg);
+}
+
+.rack-circle-more-card.is-expanded:hover .rack-circle-icon {
+  transform: rotate(180deg);
+}
+
+/* Pulsing Number Badge */
+.rack-circle-pulsing-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 5px;
+  border-radius: 11px;
+  background: #c5a059;
+  color: #121212;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  animation: pulseBadge 2.2s infinite ease-in-out;
+  pointer-events: none;
+  z-index: 5;
+}
+
+@keyframes pulseBadge {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(197, 160, 89, 0.7);
+  }
+  65% {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 9px rgba(197, 160, 89, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(197, 160, 89, 0);
+  }
+}
+
+/* Hover Information Popover / Tooltip */
+.rack-circle-hover-card {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  width: 200px;
+  background: rgba(18, 18, 18, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(197, 160, 89, 0.3);
+  border-radius: 8px;
+  padding: 14px 12px;
+  color: #f7f6f2;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.32), 0 2px 8px rgba(0, 0, 0, 0.16);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s cubic-bezier(0.2, 0.8, 0.25, 1), transform 0.28s cubic-bezier(0.2, 0.8, 0.25, 1);
+  text-align: center;
+  z-index: 60;
+}
+
+.rack-circle-hover-card::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 10px;
+  height: 10px;
+  background: #141414;
+  border-left: 1px solid rgba(197, 160, 89, 0.3);
+  border-top: 1px solid rgba(197, 160, 89, 0.3);
+}
+
+.rack-circle-more-card:hover .rack-circle-hover-card {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.hover-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.hover-card-pill {
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(197, 160, 89, 0.18);
+  color: var(--accent-gold);
+}
+
+.hover-card-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+}
+
+.hover-card-desc {
+  font-size: 10px;
+  color: #9c9a94;
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.hover-card-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.hover-card-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.hover-card-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent-gold);
+  letter-spacing: 0.02em;
 }
 
 /* =========================================================
@@ -755,6 +1190,81 @@ html, body {
 
 .swatch-dot-button.active .swatch-dot-fill {
   transform: scale(1.1);
+}
+
+.counter-rack-badge {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: rgba(197, 160, 89, 0.12);
+  color: #8c6d2d;
+  border: 1px solid rgba(197, 160, 89, 0.3);
+  margin-left: 2px;
+}
+
+.swatch-dot-button.in-vault {
+  opacity: 0.38;
+}
+
+.swatch-dot-button.in-vault:hover {
+  opacity: 0.85;
+  transform: scale(1.2);
+}
+
+.swatch-dot-button.on-rack {
+  opacity: 1;
+}
+
+.swatch-dot-button.on-rack .swatch-dot-fill {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.swatch-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 1px solid var(--border-strong);
+  color: var(--text-main);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.25, 1);
+  margin-left: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.swatch-more-btn:hover {
+  background: var(--text-main);
+  color: #ffffff;
+  border-color: var(--text-main);
+  transform: scale(1.05);
+}
+
+.swatch-more-btn.active-expanded {
+  background: #181818;
+  color: #f4f3ef;
+  border-color: #181818;
+}
+
+.swatch-more-btn.active-expanded:hover {
+  background: #333333;
+}
+
+.swatch-more-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swatch-more-label {
+  letter-spacing: 0.02em;
 }
 
 .nav-arrows-group {
@@ -1115,6 +1625,22 @@ html, body {
     gap: 10px;
   }
 
+  .editorial-subtitle-row {
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 12px;
+  }
+
+  .rack-circle-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .rack-circle-hover-card {
+    width: 175px;
+    padding: 12px 10px;
+  }
+
   /* MODAL ON MOBILE */
   .modal-backdrop {
     padding: 16px;
@@ -1163,6 +1689,22 @@ html, body {
   .garment-card {
     margin-top: 22px;
     flex: 0 0 120px;
+  }
+  .rack-circle-btn {
+    width: 40px;
+    height: 40px;
+  }
+  .rack-circle-pulsing-badge {
+    top: -5px;
+    right: -5px;
+    min-width: 18px;
+    height: 18px;
+    font-size: 9px;
+  }
+  .rack-circle-hover-card {
+    width: 155px;
+    padding: 10px 8px;
+    top: 50px;
   }
   .bottom-controls-bar {
     padding: 10px 12px 16px 12px;

@@ -8,7 +8,9 @@ export default function Header({
   setMotionEnabled, 
   soundOn, 
   setSoundOn,
-  onResetView 
+  onResetView,
+  collectionCount = 5,
+  totalCount = 9
 }) {
   return (
     <header className="top-nav">
@@ -38,7 +40,7 @@ export default function Header({
             onResetView(); 
           }}
         >
-          The collection <span style={{ opacity: 0.6, fontSize: '11px', marginLeft: '4px' }}>07</span>
+          The collection <span style={{ opacity: 0.6, fontSize: '11px', marginLeft: '4px' }}>{String(collectionCount).padStart(2, '0')}</span>
         </a>
         <a 
           href="#store" 
