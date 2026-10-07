@@ -2168,9 +2168,9 @@ html, body {
     padding-bottom: 20px;
   }
 
-  /* Fixed rod brought down to the center on mobile - top: 56px */
+  /* Fixed rod co-located with clothes inside clothes-rail-wrapper - top: 50px */
   .metallic-rod {
-    top: 56px;
+    top: 50px;
     left: 12px;
     right: 12px;
     height: 6px;
@@ -2199,15 +2199,17 @@ html, body {
   }
 
   .clothes-rail-wrapper {
-    height: 280px;
-    min-height: 280px;
+    height: 290px;
+    min-height: 290px;
     touch-action: pan-y;
+    position: relative;
+    width: 100%;
   }
 
-  /* Garment card rests precisely on 56px rod, with compact height (275px) eliminating bottom gap */
+  /* Garment card rests precisely on 50px rod (25px + 25px hook curve = 50px) */
   .garment-card {
-    height: 275px;
-    margin-top: 42px; /* 42px + 14px hook curve sits precisely on 56px rod */
+    height: 285px;
+    margin-top: 25px;
   }
 
   .garment-visual-wrapper {
@@ -2500,7 +2502,7 @@ html, body {
     font-size: 10.5px;
   }
   .metallic-rod {
-    top: 52px;
+    top: 48px;
     left: 8px;
     right: 8px;
     height: 5px;
@@ -2510,12 +2512,12 @@ html, body {
     right: 10px;
   }
   .clothes-rail-wrapper {
-    height: 270px;
-    min-height: 270px;
+    height: 275px;
+    min-height: 275px;
   }
   .garment-card {
-    margin-top: 38px; /* Sits precisely on 52px rod */
-    height: 265px;
+    margin-top: 23px; /* 48px - 25px = 23px, hook throat rests directly on top of 48px rod */
+    height: 270px;
   }
   .garment-visual-wrapper {
     width: 155px;

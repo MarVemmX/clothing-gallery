@@ -417,13 +417,7 @@ export default function Home() {
       {/* 3. SHOWROOM RAIL (BROWSING) OR ATELIER STUDIO (INSPECTING) */}
       {!selectedGarment ? (
         <section className="runway-stage is-rail-view">
-          {/* Horizontal Metallic Brass/Steel Clothes Rail Rod - ONLY in rail browsing mode */}
-          <div className="metallic-rod" />
-
-          {/* Ambient Floor Shadow */}
-          <div className="ambient-floor-shadow" />
-
-          {/* Clothes Rail Component */}
+          {/* Clothes Rail Component with integrated metallic rod and shadow */}
           <ClothesRail
             garments={visibleGarments}
             allGarments={categoryGarments}

@@ -522,6 +522,12 @@ export default function ClothesRail({
       className="clothes-rail-wrapper"
       ref={railContainerRef}
     >
+      {/* Horizontal Metallic Brass/Steel Clothes Rail Rod - Co-located with hangers so clothes NEVER detach on any screen */}
+      {!selectedGarment && <div className="metallic-rod" />}
+
+      {/* Ambient Floor Shadow */}
+      {!selectedGarment && <div className="ambient-floor-shadow" />}
+
       {/* ========================================================
           RAIL MODE (SHOWROOM RACK):
           - Distinct designs hanging on the rack
