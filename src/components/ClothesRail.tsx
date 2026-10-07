@@ -2,13 +2,35 @@
 
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import { playRailClink, playFabricSwoosh } from '../utils/audio';
+import { GarmentDesign, ColorVariant, SizeOption } from '../types/clothing';
+import { playRailClink, playFabricSwoosh, playRackingCascade } from '../utils/audio';
+
+interface ClothesRailProps {
+  garments: GarmentDesign[];
+  allGarments: GarmentDesign[];
+  nextWear?: GarmentDesign;
+  firstWear?: GarmentDesign;
+  slideDirection?: 'next' | 'prev' | 'fade' | null;
+  onSlideNext?: () => void;
+  onSlidePrev?: () => void;
+  activeGarmentId: string;
+  setActiveGarmentId?: (id: string) => void;
+  hoveredIndex: number | null;
+  setHoveredIndex: (idx: number | null) => void;
+  selectedGarment: GarmentDesign | null;
+  setSelectedGarment?: (garment: GarmentDesign | null) => void;
+  motionEnabled: boolean;
+  currentSize: SizeOption;
+  viewAngle: 'front' | 'back';
+  setViewAngle: (angle: 'front' | 'back') => void;
+  activeColorVariant?: ColorVariant;
+  categoryKey?: string;
+}
 
 export default function ClothesRail({
   garments,
   allGarments = [],
   nextWear,
-  firstWear,
   slideDirection = null,
   onSlideNext,
   onSlidePrev,
@@ -21,16 +43,19 @@ export default function ClothesRail({
   motionEnabled,
   currentSize,
   viewAngle,
-  setViewAngle
-}) {
-  const railContainerRef = useRef(null);
-  const viewportRef = useRef(null);
+  setViewAngle,
+  activeColorVariant,
+  categoryKey
+}: ClothesRailProps) {
+  const railContainerRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isRackingIn, setIsRackingIn] = useState(true);
 
-  // Responsive card spacing: 220px desktop (generous luxury spacing), 155px mobile
+  // Responsive card spacing: 220px desktop (luxury boutique spacing), 150px mobile
   const getCardSpacing = useCallback(() => {
     if (typeof window === 'undefined') return 220;
-    return window.innerWidth <= 768 ? 155 : 220;
+    return window.innerWidth <= 768 ? 150 : 220;
   }, []);
 
   const [cardSpacing, setCardSpacing] = useState(220);
@@ -38,15 +63,7 @@ export default function ClothesRail({
   // Total items on rail: 5 garments + 1 plus circle = 6 items
   const totalTrackItems = garments.length + 1;
 
-  // Center offset calculator: centers items in the middle of the rack when fitting
-  const getCenterOffset = useCallback((spacing = cardSpacing) => {
-    if (!viewportRef.current) return 0;
-    const viewportW = viewportRef.current.clientWidth;
-    const totalTrackW = totalTrackItems * spacing;
-    return viewportW > totalTrackW ? (viewportW - totalTrackW) / 2 : 0;
-  }, [totalTrackItems, cardSpacing]);
-
-  // Track scroll boundaries (Centered when fitting, bounded when overflowing)
+  // Track scroll boundaries
   const getMinMaxScroll = useCallback(() => {
     if (!viewportRef.current) return { minScroll: 0, maxScroll: 0 };
     const viewportW = viewportRef.current.clientWidth;
@@ -64,26 +81,59 @@ export default function ClothesRail({
   const [scrollX, setScrollX] = useState(0);
   const currentScrollXRef = useRef(0);
   const targetScrollXRef = useRef(0);
+  const motionEnabledRef = useRef(motionEnabled);
+  motionEnabledRef.current = motionEnabled;
+
+  // Trigger Racking Animation on page load & category changes (only when motionEnabled)
+  useEffect(() => {
+    if (!motionEnabled) {
+      setIsRackingIn(false);
+      return;
+    }
+    setIsRackingIn(true);
+    playRackingCascade();
+    const timer = setTimeout(() => {
+      setIsRackingIn(false);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [categoryKey, motionEnabled]);
+
+  // Immediately freeze all 3D rotations when motion is toggled OFF (Flat Static Catalog Mode)
+  useEffect(() => {
+    if (!motionEnabled) {
+      setIsRackingIn(false);
+      for (let i = 0; i < garments.length; i++) {
+        cardAnglesRef.current[i] = 0;
+        targetAnglesRef.current[i] = 0;
+        hoverProgressRef.current[i] = 0;
+        targetHoverProgressRef.current[i] = 0;
+      }
+      setVisualStates(
+        garments.map(() => ({
+          angle: 0,
+          progress: 0
+        }))
+      );
+    }
+  }, [motionEnabled, garments]);
 
   // Resize and Initial Centering Effect
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth <= 768;
       setIsMobile(mobile);
-      const spacing = mobile ? 155 : 220;
+      const spacing = mobile ? 150 : 220;
       setCardSpacing(spacing);
 
       if (viewportRef.current) {
         const viewportW = viewportRef.current.clientWidth;
         const totalTrackW = totalTrackItems * spacing;
         if (viewportW >= totalTrackW) {
-          // Perfectly center the 5 clothes in the middle of the rail
           const center = (viewportW - totalTrackW) / 2;
           targetScrollXRef.current = center;
           currentScrollXRef.current = center;
           setScrollX(center);
         } else {
-          // On mobile / smaller screens, center the active garment
           const activeIdx = Math.max(0, garments.findIndex(g => g.id === activeGarmentId));
           const targetPos = -(activeIdx * spacing) + (viewportW / 2 - spacing / 2);
           const minScroll = viewportW - totalTrackW - 20;
@@ -102,10 +152,10 @@ export default function ClothesRail({
 
   // Per-Garment 3D Rotation & Easing State
   const activeWinIdx = Math.max(0, garments.findIndex(g => g.id === activeGarmentId));
-  const cardAnglesRef = useRef(garments.map((_, i) => (i === activeWinIdx ? 0 : -36)));
-  const targetAnglesRef = useRef(garments.map((_, i) => (i === activeWinIdx ? 0 : -36)));
-  const hoverProgressRef = useRef(garments.map((_, i) => (i === activeWinIdx ? 1 : 0)));
-  const targetHoverProgressRef = useRef(garments.map((_, i) => (i === activeWinIdx ? 1 : 0)));
+  const cardAnglesRef = useRef<number[]>(garments.map((_, i) => (i === activeWinIdx ? 0 : -36)));
+  const targetAnglesRef = useRef<number[]>(garments.map((_, i) => (i === activeWinIdx ? 0 : -36)));
+  const hoverProgressRef = useRef<number[]>(garments.map((_, i) => (i === activeWinIdx ? 1 : 0)));
+  const targetHoverProgressRef = useRef<number[]>(garments.map((_, i) => (i === activeWinIdx ? 1 : 0)));
 
   const [visualStates, setVisualStates] = useState(
     garments.map((_, i) => ({
@@ -114,7 +164,7 @@ export default function ClothesRail({
     }))
   );
 
-  // Keep internal physics arrays synchronized with the 5 visible garments
+  // Keep internal physics arrays synchronized with the visible garments
   useEffect(() => {
     while (cardAnglesRef.current.length < garments.length) {
       const idx = cardAnglesRef.current.length;
@@ -163,24 +213,44 @@ export default function ClothesRail({
   }, [viewAngle]);
 
   // Clamp scroll inside valid boundaries
-  const clampScroll = useCallback((val) => {
+  const clampScroll = useCallback((val: number) => {
     const { minScroll, maxScroll } = getMinMaxScroll();
     return Math.max(minScroll, Math.min(maxScroll, val));
   }, [getMinMaxScroll]);
 
   // Sync active garment rotation (faces 0deg front, others rest at -36deg)
+  // Sync active garment rotation (faces 0deg front / 180deg back, others rest at -36deg / 144deg)
   useEffect(() => {
     if (selectedGarment) return;
     const activeIdx = Math.max(0, garments.findIndex(g => g.id === activeGarmentId));
+    const isBack = viewAngle === 'back';
+    const activeTargetAngle = isBack ? 180 : 0;
+    const restAngle = isBack ? 144 : -36;
 
-    // Spin active piece to front, ease others back to resting angle
+    if (!motionEnabled) {
+      for (let i = 0; i < garments.length; i++) {
+        cardAnglesRef.current[i] = i === activeIdx ? activeTargetAngle : restAngle;
+        targetAnglesRef.current[i] = cardAnglesRef.current[i];
+      }
+      setVisualStates(
+        garments.map((_, i) => ({
+          angle: i === activeIdx ? activeTargetAngle : restAngle,
+          progress: i === activeIdx ? 1 : 0
+        }))
+      );
+      return;
+    }
+
     for (let i = 0; i < garments.length; i++) {
       if (i === activeIdx) {
-        targetAnglesRef.current[i] = 0;
+        targetAnglesRef.current[i] = activeTargetAngle;
         targetHoverProgressRef.current[i] = 1;
       } else if (i !== hoveredIndex) {
-        targetAnglesRef.current[i] = -36;
+        targetAnglesRef.current[i] = restAngle;
         targetHoverProgressRef.current[i] = 0;
+      } else {
+        targetAnglesRef.current[i] = activeTargetAngle;
+        targetHoverProgressRef.current[i] = 1;
       }
     }
 
@@ -189,26 +259,32 @@ export default function ClothesRail({
       const viewportW = viewportRef.current.clientWidth;
       const totalTrackW = totalTrackItems * cardSpacing;
 
-      // When all 5 clothes fit on screen, keep them centered in the middle
       if (totalTrackW <= viewportW) {
         const center = (viewportW - totalTrackW) / 2;
         targetScrollXRef.current = center;
         return;
       }
 
-      // Otherwise center the target garment in viewport
       const targetPos = -(activeIdx * cardSpacing) + (viewportW / 2 - cardSpacing / 2);
       const minScroll = viewportW - totalTrackW - 20;
       targetScrollXRef.current = Math.max(minScroll, Math.min(0, targetPos));
     }
-  }, [activeGarmentId, selectedGarment, cardSpacing, garments, totalTrackItems, hoveredIndex]);
+  }, [activeGarmentId, selectedGarment, cardSpacing, garments, totalTrackItems, hoveredIndex, motionEnabled, viewAngle]);
 
   // 60FPS Smooth Lerp Animation Loop
-  // Handles rail scroll AND per-garment ease-in / ease-out 3D turning!
   useEffect(() => {
-    let animId;
+    let animId: number;
     const animate = () => {
-      // 1. Smooth scroll lerp
+      if (!motionEnabledRef.current) {
+        // In static mode: snap scroll directly, zero 3D rotation lerp
+        const scrollDiff = targetScrollXRef.current - currentScrollXRef.current;
+        if (Math.abs(scrollDiff) > 0.05) {
+          currentScrollXRef.current = targetScrollXRef.current;
+          setScrollX(currentScrollXRef.current);
+        }
+        animId = requestAnimationFrame(animate);
+        return;
+      }
       const scrollDiff = targetScrollXRef.current - currentScrollXRef.current;
       if (Math.abs(scrollDiff) > 0.05) {
         currentScrollXRef.current += scrollDiff * 0.12;
@@ -218,7 +294,6 @@ export default function ClothesRail({
           const viewportW = viewportRef.current.clientWidth;
           const totalTrackW = totalTrackItems * cardSpacing;
 
-          // Only compute active index from scroll when rail actually overflows and scrolls
           if (totalTrackW > viewportW) {
             const offset = -currentScrollXRef.current;
             const rawIndex = Math.round(offset / cardSpacing);
@@ -235,7 +310,6 @@ export default function ClothesRail({
         }
       }
 
-      // 2. Smooth per-garment 3D ease-in / ease-out physics
       let statesChanged = false;
       for (let i = 0; i < garments.length; i++) {
         if (cardAnglesRef.current[i] === undefined) {
@@ -245,15 +319,12 @@ export default function ClothesRail({
           targetHoverProgressRef.current[i] = i === activeWinIdxRef.current ? 1 : 0;
         }
 
-        // Continuous organic lerp for rotation angle
         const angleDiff = targetAnglesRef.current[i] - cardAnglesRef.current[i];
         if (Math.abs(angleDiff) > 0.04) {
-          // Velvet smooth ease-in / ease-out factor (0.08)
           cardAnglesRef.current[i] += angleDiff * 0.08;
           statesChanged = true;
         }
 
-        // Smooth elevation & scale progress (0 to 1)
         const progDiff = targetHoverProgressRef.current[i] - hoverProgressRef.current[i];
         if (Math.abs(progDiff) > 0.004) {
           hoverProgressRef.current[i] += progDiff * 0.08;
@@ -282,7 +353,7 @@ export default function ClothesRail({
     const el = railContainerRef.current;
     if (!el) return;
 
-    const onWheel = (e) => {
+    const onWheel = (e: WheelEvent) => {
       if (selectedGarment) return;
       e.preventDefault();
 
@@ -296,7 +367,7 @@ export default function ClothesRail({
   }, [selectedGarment, clampScroll]);
 
   // Pointer Down on Rail Viewport
-  const handlePointerDownRail = (e) => {
+  const handlePointerDownRail = (e: React.PointerEvent) => {
     if (selectedGarment) return;
     isDraggingRailRef.current = true;
     hasMovedRef.current = false;
@@ -305,7 +376,7 @@ export default function ClothesRail({
   };
 
   // Pointer Move on Rail Viewport
-  const handlePointerMoveRail = (e) => {
+  const handlePointerMoveRail = (e: React.PointerEvent) => {
     if (!isDraggingRailRef.current || selectedGarment) return;
     const deltaX = e.clientX - lastDragXRef.current;
     lastDragXRef.current = e.clientX;
@@ -328,7 +399,7 @@ export default function ClothesRail({
   };
 
   // Direct Garment Click to open individual page
-  const handleCardClick = (garment, index) => {
+  const handleCardClick = (garment: GarmentDesign) => {
     if (hasMovedRef.current) return;
 
     playFabricSwoosh();
@@ -344,49 +415,44 @@ export default function ClothesRail({
     }
   };
 
-  // =========================================================================
-  // CARD INTERACTION: Smooth Ease-in/out & Mouse Back-and-Forth Scrubbing
-  // =========================================================================
-  const handleCardPointerEnter = (e, idx) => {
+  // Card Pointer Interactions
+  const handleCardPointerEnter = (e: React.PointerEvent, idx: number) => {
     setHoveredIndex(idx);
     playRailClink();
+    if (!motionEnabled) return;
     targetHoverProgressRef.current[idx] = 1;
-    // On hover, gently eases in to Front (0deg)
     targetAnglesRef.current[idx] = 0;
   };
 
-  const handleCardPointerMove = (e, idx) => {
+  const handleCardPointerMove = (e: React.PointerEvent, idx: number) => {
+    if (!motionEnabled) return;
     const rect = e.currentTarget.getBoundingClientRect();
-    // normX: 0.0 (left edge) to 1.0 (right edge)
     const normX = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
 
-    // Dynamic back-to-front rotation driven by mouse movement back and forth:
-    // Moving mouse left (normX < 0.5) turns towards BACK (180deg)
-    // Moving mouse right (normX >= 0.5) turns towards FRONT (0deg)
     if (normX >= 0.5) {
-      targetAnglesRef.current[idx] = (normX - 0.5) * 30; // 0° to +15°
+      targetAnglesRef.current[idx] = (normX - 0.5) * 30;
     } else {
-      const backT = (0.5 - normX) / 0.5; // 0 to 1
-      targetAnglesRef.current[idx] = backT * 180; // 0° to 180°
+      const backT = (0.5 - normX) / 0.5;
+      targetAnglesRef.current[idx] = backT * 180;
     }
   };
 
-  const handleCardPointerLeave = (e, idx) => {
+  const handleCardPointerLeave = (e: React.PointerEvent, idx: number) => {
     setHoveredIndex(null);
+    if (!motionEnabled) return;
     const isThisActive = garments[idx]?.id === activeGarmentId;
     if (isThisActive) {
-      // The active piece stays facing front
       targetHoverProgressRef.current[idx] = 1;
       targetAnglesRef.current[idx] = 0;
     } else {
-      // Non-active piece eases out nicely back to resting angle (-36deg)
       targetHoverProgressRef.current[idx] = 0;
       targetAnglesRef.current[idx] = -36;
     }
   };
 
-  // Controlled 3D Drag to Turn on Individual Item Page (Clamped -180 to +180 deg)
-  const handlePointerDownTurn = (e) => {
+  // Controlled 3D Drag to Turn on Individual Item Page
+  const handlePointerDownTurn = (e: React.PointerEvent) => {
+    if (!motionEnabled) return;
     e.preventDefault();
     e.stopPropagation();
     isTurningRef.current = true;
@@ -398,14 +464,14 @@ export default function ClothesRail({
     } catch {}
   };
 
-  const handlePointerMoveTurn = (e) => {
+  const handlePointerMoveTurn = (e: React.PointerEvent) => {
     if (!isTurningRef.current) return;
     const deltaX = e.clientX - turnStartXRef.current;
     const targetAngle = Math.max(-180, Math.min(180, startAngleRef.current + deltaX * 0.45));
     setTurnAngle(targetAngle);
   };
 
-  const handlePointerUpTurn = (e) => {
+  const handlePointerUpTurn = (e: React.PointerEvent) => {
     if (!isTurningRef.current) return;
     isTurningRef.current = false;
     setIsTurningGarment(false);
@@ -424,17 +490,24 @@ export default function ClothesRail({
     }
   };
 
+  // Active images for inspected garment (strictly validated against selected garment's variants)
+  const inspectedVariant = (selectedGarment && activeColorVariant && selectedGarment.colorVariants.some(v => v.id === activeColorVariant.id))
+    ? activeColorVariant
+    : (selectedGarment?.colorVariants.find(v => v.id === selectedGarment.defaultColorId) || selectedGarment?.colorVariants[0]);
+
+  const inspectedFrontImg = inspectedVariant?.frontImg || selectedGarment?.colorVariants[0]?.frontImg || '';
+  const inspectedBackImg = inspectedVariant?.backImg || selectedGarment?.colorVariants[0]?.backImg || '';
+
   return (
     <div 
       className="clothes-rail-wrapper"
       ref={railContainerRef}
     >
       {/* ========================================================
-          RAIL MODE (HOMEPAGE):
-          - Clothes hung angled (40% turned towards front, ~36° angle)
-          - Mouse back & forth movements over pieces rotates back to front (0° to 180°)
-          - Eases in nicely and eases out nicely (60FPS organic lerp)
-          - Clicking opens individual item page
+          RAIL MODE (SHOWROOM RACK):
+          - Distinct designs hanging on the rack
+          - Initial racking entrance animation on load & category switch
+          - Interactive 3D angle rotation & smooth sliding window
           ======================================================== */}
       <div 
         ref={viewportRef}
@@ -454,13 +527,20 @@ export default function ClothesRail({
           style={{
             transform: `translateX(${scrollX}px)`,
             '--card-spacing': `${cardSpacing}px`
-          }}
+          } as React.CSSProperties}
         >
           {(() => {
-            // Build items array to render, handling smooth slide transitions
-            let renderedCards = [];
+            interface RenderedCard {
+              garment: GarmentDesign;
+              animClass: string;
+              keySuffix: string;
+              isExiting?: boolean;
+              isEntering?: boolean;
+              originalIdx: number;
+            }
+
+            const renderedCards: RenderedCard[] = [];
             if (slideDirection === 'next' && garments.length > 0) {
-              // 1st garment smoothly transitions out to the left
               renderedCards.push({
                 garment: garments[0],
                 animClass: 'cloth-slide-out-left',
@@ -468,7 +548,6 @@ export default function ClothesRail({
                 isExiting: true,
                 originalIdx: 0
               });
-              // Garments 1..4 smoothly shift left
               for (let i = 1; i < garments.length; i++) {
                 renderedCards.push({
                   garment: garments[i],
@@ -477,7 +556,6 @@ export default function ClothesRail({
                   originalIdx: i
                 });
               }
-              // Incoming garment smoothly eases in from the right
               if (nextWear) {
                 renderedCards.push({
                   garment: nextWear,
@@ -488,7 +566,6 @@ export default function ClothesRail({
                 });
               }
             } else if (slideDirection === 'prev' && garments.length > 0) {
-              // Preceding wear enters from the left
               const cur0Idx = allGarments.findIndex(g => g.id === garments[0].id);
               const prevWear = cur0Idx !== -1 ? allGarments[(cur0Idx - 1 + allGarments.length) % allGarments.length] : null;
               if (prevWear) {
@@ -516,7 +593,6 @@ export default function ClothesRail({
                 originalIdx: garments.length - 1
               });
             } else {
-              // Resting state: exactly 5 garments on rack
               garments.forEach((g, i) => {
                 renderedCards.push({
                   garment: g,
@@ -536,41 +612,67 @@ export default function ClothesRail({
                 : item.isExiting 
                   ? { angle: -36, progress: 0 } 
                   : (visualStates[item.originalIdx] || { angle: -36, progress: 0 });
+
               const sizeScale = isCurrent ? (currentSize?.scale || 1.0) : 1.0;
               const scale = (0.96 + state.progress * 0.11) * sizeScale;
               const translateY = state.progress * -8;
 
+              // Front/Back images for rack card (strictly using this garment's own colorways)
+              const isSelected = selectedGarment?.id === garment.id;
+              const cardVariant = (isSelected && activeColorVariant && garment.colorVariants.some(v => v.id === activeColorVariant.id))
+                ? activeColorVariant
+                : (garment.colorVariants.find(v => v.id === garment.defaultColorId) || garment.colorVariants[0]);
+
+              const cardFront = cardVariant?.frontImg || garment.colorVariants[0]?.frontImg || '';
+              const cardBack = cardVariant?.backImg || garment.colorVariants[0]?.backImg || '';
+
+              const isCardBack = motionEnabled ? (Math.abs(state.angle) >= 90) : (viewAngle === 'back');
+              const cardImgSrc = isCardBack ? cardBack : cardFront;
+              const cardImgAlt = isCardBack ? `${garment.title} Back View` : `${garment.title} Front View`;
+              const cardImgTransform = (isCardBack && motionEnabled) ? 'scaleX(-1)' : 'none';
+
+              const rackingClass = isRackingIn ? 'racking-entry-card' : '';
+              const rackingDelay = isRackingIn ? { animationDelay: `${idx * 85}ms` } : {};
+
               return (
                 <div 
                   key={garment.id + item.keySuffix}
-                  className={`garment-card ${isCurrent ? 'active-selected' : ''} ${isHovered ? 'hovered' : ''} ${item.animClass}`}
+                  className={`garment-card ${isCurrent ? 'active-selected' : ''} ${isHovered ? 'hovered' : ''} ${item.animClass} ${rackingClass}`}
                   style={{
                     width: `${cardSpacing}px`,
                     flex: `0 0 ${cardSpacing}px`,
-                    zIndex: isHovered ? 50 : 15
+                    zIndex: isHovered ? 50 : 15,
+                    ...rackingDelay
                   }}
                   onPointerEnter={(e) => handleCardPointerEnter(e, item.originalIdx)}
                   onPointerMove={(e) => handleCardPointerMove(e, item.originalIdx)}
                   onPointerLeave={(e) => handleCardPointerLeave(e, item.originalIdx)}
-                  onClick={() => handleCardClick(garment, item.originalIdx)}
+                  onClick={() => handleCardClick(garment)}
                   onPointerUp={() => {
                     if (!hasMovedRef.current) {
-                      handleCardClick(garment, item.originalIdx);
+                      handleCardClick(garment);
                     }
                   }}
-                  title={`Click to view ${garment.title}`}
+                  title={`Inspect ${garment.title}`}
                 >
                   <div 
                     className="garment-visual-wrapper"
                     style={{
-                      transform: `perspective(1000px) rotateY(${state.angle}deg) translateY(${translateY}px) scale(${scale})`
+                      transform: motionEnabled
+                        ? `perspective(1000px) rotateY(${state.angle}deg) translateY(${translateY}px) scale(${scale})`
+                        : `scale(${scale})`,
+                      transition: motionEnabled ? undefined : 'none'
                     }}
                   >
-                    {/* Front Face (Visible at 0deg) */}
-                    <div className="card-face face-front">
+                    <div 
+                      className={`card-face ${isCardBack ? 'face-back' : 'face-front'}`}
+                      style={{
+                        transform: cardImgTransform
+                      }}
+                    >
                       <Image 
-                        src={garment.frontImg}
-                        alt={`${garment.title} Front View`}
+                        src={cardImgSrc}
+                        alt={cardImgAlt}
                         width={260}
                         height={isMobile ? 260 : 350}
                         priority={idx < 5}
@@ -578,24 +680,8 @@ export default function ClothesRail({
                         style={{
                           height: isMobile ? '260px' : '350px',
                           width: 'auto',
-                          objectFit: 'contain'
-                        }}
-                      />
-                    </div>
-
-                    {/* Back Face (Visible at 180deg) */}
-                    <div className="card-face face-back">
-                      <Image 
-                        src={garment.backImg}
-                        alt={`${garment.title} Back View`}
-                        width={260}
-                        height={isMobile ? 260 : 350}
-                        priority={idx < 5}
-                        className="garment-img"
-                        style={{
-                          height: isMobile ? '260px' : '350px',
-                          width: 'auto',
-                          objectFit: 'contain'
+                          objectFit: 'contain',
+                          filter: cardVariant?.filter || 'none'
                         }}
                       />
                     </div>
@@ -605,7 +691,7 @@ export default function ClothesRail({
             });
           })()}
 
-          {/* Minimalist "+" Circle on the Rail with Pulsing Remaining Wears Badge */}
+          {/* Minimalist "+" Circle on the Rail with Pulsing Badge */}
           {allGarments.length > 5 && (
             <div 
               className={`garment-card rack-circle-more-card ${slideDirection === 'next' ? 'cloth-shift-left' : slideDirection === 'prev' ? 'cloth-shift-right' : ''}`}
@@ -620,10 +706,9 @@ export default function ClothesRail({
                   if (onSlideNext) onSlideNext();
                 }
               }}
-              title={`Click to slide next wear (${nextWear?.code}. ${nextWear?.title}) onto rack`}
+              title={`Slide next design (${nextWear?.code}. ${nextWear?.title}) onto rail`}
             >
               <div className="rack-circle-visual">
-                {/* Thin, minimalist chrome hook looping over the steel rail */}
                 <div className="rack-circle-hook-wrap">
                   <svg width="24" height="48" viewBox="0 0 24 48" fill="none" className="rack-circle-hook-svg">
                     <path 
@@ -642,15 +727,12 @@ export default function ClothesRail({
                   </svg>
                 </div>
 
-                {/* Minimalist Circle Button with Pulsing Number Badge */}
                 <div className="rack-circle-btn-container">
                   <div className="rack-circle-btn">
-                    {/* Pulsing Count Badge showing number of remaining wears */}
-                    <span className="rack-circle-pulsing-badge" aria-label={`+${allGarments.length - garments.length} more wears`}>
+                    <span className="rack-circle-pulsing-badge" aria-label={`+${allGarments.length - garments.length} more designs`}>
                       +{allGarments.length - garments.length}
                     </span>
 
-                    {/* Clean Plus Icon */}
                     <span className="rack-circle-icon">
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -659,29 +741,22 @@ export default function ClothesRail({
                     </span>
                   </div>
 
-                  {/* Informational Popover on Hover */}
                   <div className="rack-circle-hover-card">
                     <div className="hover-card-header">
-                      <span className="hover-card-pill">Next Wear</span>
-                      <span className="hover-card-title">
+                      <span className="hover-card-pill">Next Design</span>
+                      <span className="hover-card-title truncate">
                         {nextWear ? `${nextWear.code}. ${nextWear.title}` : 'Slide Next'}
                       </span>
                     </div>
 
                     <p className="hover-card-desc">
                       {nextWear 
-                        ? `${nextWear.colorName} · Nigerian Senator`
-                        : 'Slide next silhouette from archive onto rack'}
+                        ? `${nextWear.categoryLabel} · ${nextWear.colorVariants[0]?.name}`
+                        : 'Slide next silhouette from archive onto rail'}
                     </p>
 
-                    {nextWear && (
-                      <div className="hover-card-dots">
-                        <span style={{ backgroundColor: nextWear.colorHex, border: '1.5px solid #c5a059' }} title={nextWear.title} />
-                      </div>
-                    )}
-
                     <div className="hover-card-action">
-                      <span>Click to slide onto rack</span>
+                      <span>Click to slide onto rail</span>
                       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="9 18 15 12 9 6"></polyline>
                       </svg>
@@ -695,10 +770,11 @@ export default function ClothesRail({
       </div>
 
       {/* ========================================================
-          INDIVIDUAL ITEM PAGE (DETAIL INSPECTION MODE):
-          - Clothe is COMPLETELY FACING FRONT (rotateY: 0deg)
-          - Hanger hook sits directly on the metallic rail rod
-          - Front / Back inspection & physical size adjustment
+          INDIVIDUAL PIECE INSPECTION STAGE:
+          - Centered front face
+          - Physical size scaling reflecting selected size
+          - 360 degree turntable drag & view angle switch
+          - Reflects selected color variant
           ======================================================== */}
       {selectedGarment && (
         <div 
@@ -708,7 +784,6 @@ export default function ClothesRail({
           onPointerUp={handlePointerUpTurn}
           onPointerCancel={handlePointerUpTurn}
         >
-          {/* Dynamic Physical Size Scaler with top-center origin */}
           <div 
             className="scaled-silhouette-wrapper"
             style={{
@@ -716,19 +791,18 @@ export default function ClothesRail({
               transformOrigin: 'top center'
             }}
           >
-            {/* 3D Rotatable Garment (Completely Front by default) */}
             <div 
-              key={selectedGarment.id}
+              key={`${selectedGarment.id}-${activeColorVariant?.id}`}
               className={`turnable-card-3d detail-garment-enter ${isTurningGarment ? 'dragging' : ''}`}
               style={{
                 transform: `rotateY(${turnAngle}deg)`
               }}
-              title="Drag horizontally to turn the Senator attire"
+              title="Drag horizontally to turn 360°"
             >
-              {/* Front Face (Completely facing front at 0deg) */}
+              {/* Front Face */}
               <div className="card-face face-front">
                 <Image 
-                  src={selectedGarment.frontImg} 
+                  src={inspectedFrontImg} 
                   alt={`${selectedGarment.title} Front View`}
                   width={340}
                   height={isMobile ? 290 : 410}
@@ -745,7 +819,7 @@ export default function ClothesRail({
               {/* Back Face */}
               <div className="card-face face-back">
                 <Image 
-                  src={selectedGarment.backImg} 
+                  src={inspectedBackImg} 
                   alt={`${selectedGarment.title} Back View`}
                   width={340}
                   height={isMobile ? 290 : 410}

@@ -2,14 +2,24 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { GarmentDesign, SizeOption, ColorVariant } from '../types/clothing';
 import { playSoftClick } from '../utils/audio';
+
+interface CommissionModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  garment: GarmentDesign | null;
+  selectedSize: SizeOption;
+  activeColorVariant?: ColorVariant;
+}
 
 export default function CommissionModal({
   isOpen,
   onClose,
   garment,
-  selectedSize
-}) {
+  selectedSize,
+  activeColorVariant
+}: CommissionModalProps) {
   const [bespokeMode, setBespokeMode] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
@@ -24,7 +34,7 @@ export default function CommissionModal({
 
   if (!isOpen || !garment) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     playSoftClick();
     setSubmitted(true);
@@ -34,6 +44,12 @@ export default function CommissionModal({
     setSubmitted(false);
     onClose();
   };
+
+  const modalVariant = (activeColorVariant && garment.colorVariants.some(v => v.id === activeColorVariant.id))
+    ? activeColorVariant
+    : (garment.colorVariants.find(v => v.id === garment.defaultColorId) || garment.colorVariants[0]);
+
+  const thumbImg = modalVariant?.frontImg || garment.colorVariants[0]?.frontImg || '';
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
@@ -53,7 +69,7 @@ export default function CommissionModal({
               Commission Confirmed
             </h3>
             <p style={{ fontSize: '13px', color: 'var(--text-muted)', lineHeight: '1.6', marginBottom: '24px' }}>
-              Your order for the <strong>{garment.title}</strong> (Size {selectedSize.label.toUpperCase()}) has been registered at our Lagos Atelier. Our bespoke master tailor will reach out on WhatsApp to verify measurements.
+              Your order for the <strong>{garment.title}</strong> in {activeColorVariant?.name || 'Selected Colorway'} (Size {selectedSize.label.toUpperCase()}) has been registered at our Lagos Atelier. Our bespoke master tailor will reach out on WhatsApp to verify measurements.
             </p>
             <button className="modal-submit-btn" onClick={handleReset}>
               Return to Collection
@@ -61,16 +77,16 @@ export default function CommissionModal({
           </div>
         ) : (
           <>
-            <h3 className="modal-title">Commission Bespoke Fit</h3>
+            <h3 className="modal-title font-serif">Commission Bespoke Fit</h3>
             <p className="modal-subtitle">
-              Hand-tailored Nigerian Senator attire · Lagos High Fashion Atelier
+              Hand-tailored {garment.categoryLabel} · Lagos High Fashion Atelier
             </p>
 
             {/* Garment summary badge */}
             <div className="modal-garment-summary">
               <div className="modal-garment-thumb" style={{ position: 'relative' }}>
                 <Image 
-                  src={garment.frontImg} 
+                  src={thumbImg} 
                   alt={garment.title} 
                   fill 
                   sizes="60px"
@@ -80,7 +96,7 @@ export default function CommissionModal({
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: '14px', fontWeight: 600 }}>{garment.title}</div>
                 <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                  {garment.fabric} · Selected Size: <strong>{selectedSize.label.toUpperCase()}</strong>
+                  {modalVariant?.name} · Size: <strong>{selectedSize.label.toUpperCase()}</strong>
                 </div>
                 <div style={{ fontSize: '13px', fontWeight: 600, marginTop: '4px' }}>
                   {garment.priceNaira}
@@ -166,7 +182,7 @@ export default function CommissionModal({
                     />
                   </div>
                   <div className="form-group">
-                    <label className="form-label">Tunic Length (inches)</label>
+                    <label className="form-label">Garment Length (inches)</label>
                     <input 
                       type="text" 
                       placeholder="e.g. 41" 

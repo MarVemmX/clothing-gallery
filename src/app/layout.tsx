@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Cormorant_Garamond, Syne } from "next/font/google";
 import "./globals.css";
 
@@ -22,13 +23,17 @@ const syne = Syne({
   display: "swap",
 });
 
-export const metadata = {
-  title: "ÀRÈWÀ SENATORIAL · Bespoke Nigerian Haute Couture",
-  description: "Exclusive Nigerian Senator collection. Handcrafted Italian cashmere tunics with geometric embroidery, interactive visual size preview, and bespoke tailoring.",
-  keywords: ["Nigerian Senator outfit", "Senator wear", "Bespoke menswear Nigeria", "Agbada", "Lagos atelier fashion"],
+export const metadata: Metadata = {
+  title: "ÀRÈWÀ · Bespoke English Suits, Streetwear, Denim & Royal Senators",
+  description: "Luxury menswear atelier showcasing bespoke English suits, peak-lapel tuxedos, Japanese selvedge denim, heavy streetwear, and royal Nigerian Senators with interactive 3D showroom rail.",
+  keywords: ["English bespoke suits", "Tuxedo", "Japanese selvedge denim", "Luxury streetwear", "Nigerian Senator wear", "Lagos atelier fashion"],
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" className={`${sans.variable} ${display.variable} ${syne.variable}`}>
       <body>{children}</body>
