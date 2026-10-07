@@ -52,16 +52,21 @@ export default function ClothesRail({
   const [isMobile, setIsMobile] = useState(false);
   const [isRackingIn, setIsRackingIn] = useState(true);
 
-  // Responsive card spacing: 220px desktop (luxury boutique spacing), 150px mobile
+  // Responsive card spacing: 220px desktop (luxury boutique spacing), 150px tablet, 120px mobile
   const getCardSpacing = useCallback(() => {
     if (typeof window === 'undefined') return 220;
+    if (window.innerWidth <= 480) {
+      const vw = window.innerWidth;
+      return Math.min(130, Math.max(105, Math.floor((vw - 36) / 2.8)));
+    }
     return window.innerWidth <= 768 ? 150 : 220;
   }, []);
 
   const [cardSpacing, setCardSpacing] = useState(220);
 
-  // Total items on rail: 5 garments + 1 plus circle = 6 items
-  const totalTrackItems = garments.length + 1;
+  // Total items on rail: visible garments + 1 plus circle if there are remaining garments in archive
+  const hasMoreDesigns = allGarments.length > garments.length;
+  const totalTrackItems = garments.length + (hasMoreDesigns ? 1 : 0);
 
   // Track scroll boundaries
   const getMinMaxScroll = useCallback(() => {
@@ -122,7 +127,7 @@ export default function ClothesRail({
     const handleResize = () => {
       const mobile = window.innerWidth <= 768;
       setIsMobile(mobile);
-      const spacing = mobile ? 150 : 220;
+      const spacing = getCardSpacing();
       setCardSpacing(spacing);
 
       if (viewportRef.current) {
@@ -148,7 +153,7 @@ export default function ClothesRail({
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [totalTrackItems, garments, activeGarmentId]);
+  }, [totalTrackItems, garments, activeGarmentId, getCardSpacing]);
 
   // Per-Garment 3D Rotation & Easing State
   const activeWinIdx = Math.max(0, garments.findIndex(g => g.id === activeGarmentId));
@@ -396,6 +401,19 @@ export default function ClothesRail({
   const handlePointerUpRail = () => {
     if (!isDraggingRailRef.current) return;
     isDraggingRailRef.current = false;
+
+    // Smooth snap to closest garment on release for intuitive mobile touch carousel
+    if (viewportRef.current) {
+      const viewportW = viewportRef.current.clientWidth;
+      const offset = -targetScrollXRef.current + (viewportW / 2 - cardSpacing / 2);
+      const rawIdx = Math.round(offset / cardSpacing);
+      const nearestIdx = Math.max(0, Math.min(garments.length - 1, rawIdx));
+      if (garments[nearestIdx]) {
+        if (setActiveGarmentId) setActiveGarmentId(garments[nearestIdx].id);
+        const snapPos = -(nearestIdx * cardSpacing) + (viewportW / 2 - cardSpacing / 2);
+        targetScrollXRef.current = clampScroll(snapPos);
+      }
+    }
   };
 
   // Direct Garment Click to open individual page
@@ -417,6 +435,7 @@ export default function ClothesRail({
 
   // Card Pointer Interactions
   const handleCardPointerEnter = (e: React.PointerEvent, idx: number) => {
+    if (e.pointerType === 'touch') return;
     setHoveredIndex(idx);
     playRailClink();
     if (!motionEnabled) return;
@@ -425,7 +444,7 @@ export default function ClothesRail({
   };
 
   const handleCardPointerMove = (e: React.PointerEvent, idx: number) => {
-    if (!motionEnabled) return;
+    if (e.pointerType === 'touch' || !motionEnabled) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const normX = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
 
@@ -692,7 +711,7 @@ export default function ClothesRail({
           })()}
 
           {/* Minimalist "+" Circle on the Rail with Pulsing Badge */}
-          {allGarments.length > 5 && (
+          {hasMoreDesigns && (
             <div 
               className={`garment-card rack-circle-more-card ${slideDirection === 'next' ? 'cloth-shift-left' : slideDirection === 'prev' ? 'cloth-shift-right' : ''}`}
               style={{

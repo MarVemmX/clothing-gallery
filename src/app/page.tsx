@@ -18,9 +18,22 @@ export default function Home() {
   const [motionEnabled, setMotionEnabled] = useState(true);
   const [soundOn, setSoundOn] = useState(true);
 
-  // Current category's garments
+  // Responsive mobile detection (3 garments on mobile, 5 on desktop)
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Current category's garments (3 on mobile, 5 on desktop)
   const categoryGarments = getGarmentsByCategory(activeCategory);
-  const WINDOW_SIZE = Math.min(5, categoryGarments.length);
+  const windowCapacity = isMobile ? 3 : 5;
+  const WINDOW_SIZE = Math.min(windowCapacity, categoryGarments.length);
 
   const [startIndex, setStartIndex] = useState(0);
   const [activeGarmentId, setActiveGarmentId] = useState<string>(categoryGarments[0]?.id || '');
