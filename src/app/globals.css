@@ -286,11 +286,18 @@ html, body {
 /* EDITORIAL SUBHEADER */
 .editorial-header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 26px 64px 8px 64px;
+  flex-direction: column;
+  padding: 24px 64px 8px 64px;
   position: relative;
   z-index: 40;
+  gap: 8px;
+}
+
+.editorial-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  width: 100%;
 }
 
 .collection-heading-group {
@@ -330,10 +337,22 @@ html, body {
 
 .editorial-subtitle-row {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   font-size: 13px;
   color: var(--text-muted);
+}
+
+.editorial-tagline {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.editorial-actions-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .editorial-more-toggle-btn {
@@ -366,6 +385,9 @@ html, body {
 }
 
 .rail-metadata {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
   text-align: right;
   font-size: 12px;
   line-height: 1.6;
@@ -374,7 +396,16 @@ html, body {
 
 .rail-metadata .title {
   color: var(--text-main);
-  font-weight: 500;
+  font-weight: 600;
+}
+
+.rail-metadata .metadata-dot {
+  color: var(--border-strong);
+  font-weight: 700;
+}
+
+.rail-metadata .metadata-edition {
+  color: var(--text-muted);
 }
 
 /* MAIN RUNWAY / CLOTHES RAIL AREA */
@@ -1979,10 +2010,29 @@ html, body {
 }
 
 @media (max-width: 768px) {
+  /* HOMEPAGE VIEWPORT FIT: Keep rail mode inside 100dvh without vertical scrolling */
+  .app-container.mode-rail {
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .app-container.mode-detail {
+    min-height: 100vh;
+    height: auto;
+    overflow-y: auto;
+  }
+
+  /* TOP NAVBAR ON MOBILE */
   .top-nav {
-    padding: 12px 16px;
+    padding: 10px 14px;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
+    flex-shrink: 0;
   }
   .nav-left {
     order: 1;
@@ -1997,7 +2047,7 @@ html, body {
     width: 100%;
     max-width: 100%;
     justify-content: flex-start;
-    padding: 4px;
+    padding: 3px 4px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
@@ -2007,41 +2057,108 @@ html, body {
     display: none;
   }
   .category-pill-btn {
-    padding: 5px 13px;
-    font-size: 11.5px;
+    padding: 4px 12px;
+    font-size: 11px;
     flex-shrink: 0;
   }
   .brand-logo {
     font-size: 20px;
   }
+  .motion-label-text {
+    display: none !important;
+  }
+  .pill-toggle {
+    padding: 6px 10px;
+    gap: 5px;
+  }
+  .bag-pill-btn .bag-label-text {
+    display: none !important;
+  }
+  .bag-pill-btn {
+    padding: 6px 10px;
+    gap: 4px;
+  }
+
+  /* EDITORIAL SUBHEADER ON MOBILE: Uncluttered 2-Row Layout */
   .editorial-header {
-    padding: 16px 16px 4px 16px;
+    padding: 8px 16px 2px 16px;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .editorial-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
   }
   .main-title {
-    font-size: 24px;
+    font-size: 21px;
+    line-height: 1.15;
+  }
+  .rail-metadata {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    font-size: 11px;
+    line-height: 1.2;
+    white-space: nowrap;
+    color: var(--text-muted);
+  }
+  .rail-metadata .title {
+    color: var(--text-main);
+    font-weight: 600;
+  }
+  .rail-metadata .metadata-dot {
+    color: var(--border-strong);
+    font-weight: 700;
+  }
+  .rail-metadata .metadata-edition {
+    color: var(--text-muted);
+    font-size: 10.5px;
   }
   .editorial-subtitle-row {
-    flex-wrap: wrap;
-    gap: 8px;
-    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+  }
+  .editorial-tagline {
+    font-size: 11px;
+    line-height: 1.25;
+    color: var(--text-muted);
+  }
+  .editorial-actions-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
   .rail-view-toggle-bar {
-    gap: 3px;
+    gap: 2px;
     padding: 2px;
   }
   .rail-view-pill {
-    padding: 3px 10px;
-    font-size: 10.5px;
+    padding: 3px 8px;
+    font-size: 10px;
   }
-  .rail-metadata {
-    font-size: 11px;
-    line-height: 1.4;
+  .editorial-more-toggle-btn {
+    padding: 2px 8px;
+    font-size: 10px;
   }
 
-  .runway-stage {
-    min-height: 420px;
-    padding-bottom: 12px;
+  /* SHOWROOM RUNWAY STAGE ON MOBILE: Centered with snug fit to bottom controls */
+  .runway-stage.is-rail-view {
+    flex: 1 1 auto;
+    min-height: 285px;
+    max-height: calc(100dvh - 200px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 0;
+    margin: 0;
     overflow: hidden;
   }
 
@@ -2051,11 +2168,11 @@ html, body {
     padding-bottom: 20px;
   }
 
-  /* Fixed rod and finials on mobile - top: 48px */
+  /* Fixed rod brought down to the center on mobile - top: 56px */
   .metallic-rod {
-    top: 48px;
-    left: 14px;
-    right: 14px;
+    top: 56px;
+    left: 12px;
+    right: 12px;
     height: 6px;
   }
   .metallic-rod::before,
@@ -2073,47 +2190,52 @@ html, body {
 
   /* Contained viewport strictly within the rod finials */
   .rail-viewport {
-    left: 20px;
-    right: 20px;
+    top: 0;
+    left: 16px;
+    right: 16px;
     touch-action: pan-y;
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 20px), transparent 100%);
-    mask-image: linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 20px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 16px, black calc(100% - 16px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 16px, black calc(100% - 16px), transparent 100%);
   }
 
   .clothes-rail-wrapper {
-    min-height: 380px;
+    height: 280px;
+    min-height: 280px;
     touch-action: pan-y;
   }
 
+  /* Garment card rests precisely on 56px rod, with compact height (275px) eliminating bottom gap */
   .garment-card {
-    height: 360px;
-    margin-top: 34px; /* 34px + hook throat curve sits precisely on 48px rod */
+    height: 275px;
+    margin-top: 42px; /* 42px + 14px hook curve sits precisely on 56px rod */
   }
 
   .garment-visual-wrapper {
-    width: 190px;
-    height: 260px;
+    width: 175px;
+    height: 235px;
   }
 
   .garment-visual-wrapper .garment-img {
-    max-height: 270px;
+    max-height: 230px;
   }
 
   .ambient-floor-shadow {
-    bottom: 12px;
-    left: 4%;
-    right: 4%;
-    height: 28px;
+    bottom: 2px;
+    left: 6%;
+    right: 6%;
+    height: 18px;
   }
 
-  /* DETAIL MODE ON MOBILE: Elegant vertical stack with zero overflow */
+  /* DETAIL MODE ON MOBILE: Elegant vertical stack */
   .atelier-detail-studio {
     flex-direction: column;
     align-items: center;
-    gap: 24px;
+    gap: 20px;
     padding: 16px 16px 36px 16px;
     min-height: auto;
   }
+
+  /* FLOATING BUTTONS IN ATELIER STUDIO ON MOBILE: Icons only! No text required */
   .studio-top-floating-bar {
     top: 14px;
     left: 14px;
@@ -2121,14 +2243,41 @@ html, body {
     gap: 8px;
   }
   .studio-back-rail-floating {
-    padding: 7px 13px;
-    font-size: 11px;
-    gap: 6px;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 50%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
   }
+  .studio-back-rail-floating span {
+    display: none !important;
+  }
+
   .studio-cart-floating {
-    padding: 7px 13px;
-    font-size: 11px;
-    gap: 6px;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 50%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  }
+  .studio-cart-floating > span:not(.floating-cart-count) {
+    display: none !important;
+  }
+  .studio-cart-floating .floating-cart-count {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 4px;
+    font-size: 9.5px;
   }
 
   .studio-visual-column {
@@ -2147,15 +2296,15 @@ html, body {
     transform-origin: 50% 24px;
   }
   .studio-turntable-stage {
-    width: 280px;
-    height: 350px;
-  }
-  .studio-3d-card {
-    width: 260px;
+    width: 270px;
     height: 340px;
   }
+  .studio-3d-card {
+    width: 250px;
+    height: 330px;
+  }
   .studio-garment-image {
-    max-height: 320px;
+    max-height: 310px;
   }
   .studio-detail-column {
     flex: 0 0 auto;
@@ -2194,46 +2343,63 @@ html, body {
     animation: fadeIn 0.3s ease forwards;
   }
   .panel-title {
-    font-size: 26px;
+    font-size: 24px;
   }
   .panel-price {
     font-size: 16px;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
   .view-switch-row {
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
   .size-selector-row {
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
 
-  /* BOTTOM CONTROLS ON MOBILE */
+  /* BOTTOM CONTROLS ON MOBILE: Snug below clothes, completely visible in viewport */
   .bottom-controls-bar {
-    padding: 10px 14px max(14px, env(safe-area-inset-bottom)) 14px;
+    flex-shrink: 0;
+    padding: 6px 14px max(10px, env(safe-area-inset-bottom)) 14px;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 10px;
+    gap: 6px;
+    background: rgba(244, 243, 239, 0.96);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border-subtle);
   }
   .collection-counter {
     order: 1;
-    font-size: 11px;
-    gap: 8px;
+    font-size: 10.5px;
+    gap: 6px;
   }
   .counter-dash {
-    width: 16px;
+    width: 14px;
   }
   .nav-arrows-group {
     order: 2;
-    gap: 6px;
+    gap: 4px;
   }
   .circle-nav-btn {
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
   }
   .center-control-group {
     order: 3;
     width: 100%;
-    gap: 6px;
+    gap: 2px;
+  }
+  .status-piece-title {
+    font-size: 15px;
+    line-height: 1.2;
+    margin-bottom: 1px;
+  }
+  .status-piece-sub {
+    font-size: 11.5px;
+    line-height: 1.25;
+    margin-bottom: 4px;
+  }
+  .rack-angle-toggle-group {
+    display: none; /* Already prominently available in the editorial header bar */
   }
   .design-chips-nav {
     display: flex;
@@ -2241,7 +2407,7 @@ html, body {
     max-width: 100%;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    gap: 6px;
+    gap: 5px;
     padding: 2px 0;
     justify-content: flex-start;
   }
@@ -2249,9 +2415,9 @@ html, body {
     display: none;
   }
   .design-chip-btn {
-    min-width: 30px;
-    height: 30px;
-    font-size: 11px;
+    min-width: 28px;
+    height: 28px;
+    font-size: 10.5px;
     flex-shrink: 0;
   }
   .detail-silhouette-cycler {
@@ -2270,13 +2436,13 @@ html, body {
   }
 
   .rack-circle-btn {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
   }
 
   .rack-circle-hover-card {
-    width: 175px;
-    padding: 12px 10px;
+    width: 165px;
+    padding: 10px 8px;
   }
 
   /* MODAL ON MOBILE */
@@ -2284,7 +2450,7 @@ html, body {
     padding: 16px;
   }
   .modal-card {
-    padding: 24px 18px;
+    padding: 22px 16px;
     max-width: 100%;
     max-height: 90vh;
     overflow-y: auto;
@@ -2297,116 +2463,121 @@ html, body {
 
 @media (max-width: 480px) {
   .top-nav {
-    padding: 10px 12px;
+    padding: 8px 12px;
   }
   .brand-logo {
     font-size: 19px;
   }
   .motion-label-text,
   .bag-label-text {
-    display: none;
+    display: none !important;
   }
   .pill-toggle {
-    padding: 6px 10px;
-    font-size: 11px;
+    padding: 5px 8px;
+    font-size: 10.5px;
   }
   .bag-pill-btn {
-    padding: 6px 10px;
+    padding: 5px 8px;
   }
   .icon-sound {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
   }
   .editorial-header {
-    padding: 12px 14px 4px 14px;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .rail-metadata {
-    display: none;
+    padding: 6px 12px 2px 12px;
   }
   .main-title {
-    font-size: 20px;
+    font-size: 19px;
+  }
+  .rail-metadata {
+    font-size: 10px;
+    gap: 4px;
+  }
+  .rail-metadata .metadata-edition {
+    font-size: 10px;
+  }
+  .editorial-tagline {
+    font-size: 10.5px;
   }
   .metallic-rod {
-    top: 44px;
+    top: 52px;
     left: 8px;
     right: 8px;
     height: 5px;
   }
   .rail-viewport {
-    left: 12px;
-    right: 12px;
+    left: 10px;
+    right: 10px;
+  }
+  .clothes-rail-wrapper {
+    height: 270px;
+    min-height: 270px;
   }
   .garment-card {
-    margin-top: 30px; /* Sits precisely on 44px rod */
-    height: 340px;
+    margin-top: 38px; /* Sits precisely on 52px rod */
+    height: 265px;
   }
   .garment-visual-wrapper {
-    width: 160px;
-    height: 235px;
+    width: 155px;
+    height: 225px;
   }
   .garment-visual-wrapper .garment-img {
-    max-height: 230px;
+    max-height: 220px;
   }
   .studio-turntable-stage {
-    width: 250px;
-    height: 320px;
+    width: 245px;
+    height: 310px;
   }
   .studio-3d-card {
-    width: 230px;
-    height: 300px;
+    width: 225px;
+    height: 295px;
   }
   .studio-garment-image {
-    max-height: 280px;
+    max-height: 275px;
   }
   .model-card-dock {
     left: 10px;
-    bottom: max(72px, calc(env(safe-area-inset-bottom) + 68px));
+    bottom: max(68px, calc(env(safe-area-inset-bottom) + 64px));
   }
   .model-preview-card {
-    width: 115px;
-    padding: 5px;
-  }
-  .rack-circle-btn {
-    width: 38px;
-    height: 38px;
-  }
-  .rack-circle-pulsing-badge {
-    top: -5px;
-    right: -5px;
-    min-width: 18px;
-    height: 18px;
-    font-size: 9px;
-  }
-  .rack-circle-hover-card {
-    width: 155px;
-    padding: 10px 8px;
-    top: 50px;
+    width: 112px;
+    padding: 4px;
   }
   .bottom-controls-bar {
-    padding: 8px 12px max(14px, env(safe-area-inset-bottom)) 12px;
+    padding: 5px 10px max(8px, env(safe-area-inset-bottom)) 10px;
+  }
+  .status-piece-title {
+    font-size: 14px;
+  }
+  .status-piece-sub {
+    font-size: 11px;
+    margin-bottom: 2px;
   }
   .circle-nav-btn {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
+  }
+  .design-chip-btn {
+    min-width: 26px;
+    height: 26px;
+    font-size: 10px;
   }
   .size-btn {
-    padding: 8px 0;
-    font-size: 11px;
+    padding: 7px 0;
+    font-size: 10.5px;
   }
   .cart-drawer-panel {
     width: 100%;
     max-width: 100%;
   }
   .cart-header {
-    padding: 16px 18px;
+    padding: 14px 16px;
   }
   .cart-items-container {
-    padding: 14px 18px;
+    padding: 12px 16px;
   }
   .cart-footer {
-    padding: 16px 18px;
+    padding: 14px 16px;
   }
 }
 

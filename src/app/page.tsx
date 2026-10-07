@@ -351,15 +351,24 @@ export default function Home() {
       {/* 2. EDITORIAL SUBHEADER - Hidden on individual piece view (?piece=...) */}
       {!selectedGarment && (
         <section className="editorial-header">
-          <div className="collection-heading-group">
+          <div className="editorial-header-top">
             <h1 className="main-title font-serif">
               {currentCategoryObj.name}
             </h1>
-            <div className="editorial-subtitle-row">
-              <span className="text-stone-300 font-medium">
-                {currentCategoryObj.tagline}
-              </span>
 
+            <div className="rail-metadata">
+              <span className="title font-serif">{currentCategoryObj.badge || 'Showroom'}</span>
+              <span className="metadata-dot">·</span>
+              <span className="metadata-edition">Bespoke Edition / 2026</span>
+            </div>
+          </div>
+
+          <div className="editorial-subtitle-row">
+            <span className="editorial-tagline font-medium">
+              {currentCategoryObj.tagline}
+            </span>
+
+            <div className="editorial-actions-wrap">
               {/* Showroom Rail View Angle Toggle Pills */}
               <div className="rail-view-toggle-bar" role="group" aria-label="Showroom rail view orientation">
                 <button
@@ -401,11 +410,6 @@ export default function Home() {
                 </button>
               )}
             </div>
-          </div>
-
-          <div className="rail-metadata">
-            <div className="title font-serif">{currentCategoryObj.badge || 'Showroom'}</div>
-            <div>Bespoke Edition / 2026</div>
           </div>
         </section>
       )}
