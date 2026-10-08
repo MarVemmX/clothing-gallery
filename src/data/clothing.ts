@@ -868,6 +868,90 @@ export const ALL_GARMENTS: GarmentDesign[] = [
         filter: 'sepia(0.6) hue-rotate(330deg) saturate(1.6) brightness(0.88)'
       }
     ]
+  },
+  {
+    id: 'senator-10',
+    code: '17',
+    category: 'senators',
+    categoryLabel: 'Monarch Heritage',
+    title: 'Imperial Burgundy Senator',
+    subtitle: 'Champagne Silk Geometric Placket & Tailored Trousers',
+    series: 'Monarch Heritage Cut',
+    cut: 'Royal Classic Longline Tunic with Trouser Set',
+    lapelOrCollar: 'Piped Mandarin Standing Collar',
+    fabric: 'Pure Merino Cashmere Suiting & Silk Accents',
+    priceNaira: '₦180,000',
+    priceRaw: 180000,
+    description: 'A commanding, aristocratic crimson-burgundy longline tunic featuring champagne geometric motifs engineered for gala evenings and national occasions.',
+    leadTime: '5–7 Business Days',
+    defaultColorId: 'burgundy',
+    colorVariants: [
+      {
+        id: 'burgundy',
+        name: 'Imperial Burgundy Wine',
+        hex: '#6b1d2f',
+        dotColor: '#6b1d2f',
+        frontImg: '/senators/03_burgundy_front.png',
+        backImg: '/senators/03_burgundy_back.png',
+        modelImg: '/models/senators/05_model.jpg',
+        modelCaption: 'Monarch Model · 6\'2" wearing Imperial Burgundy Senator (Size L)',
+        status: 'In High Demand',
+        stockSlots: 2,
+        filter: 'none'
+      },
+      {
+        id: 'onyx',
+        name: 'Midnight Onyx Noir',
+        hex: '#19191b',
+        dotColor: '#19191b',
+        frontImg: '/senators/04_onyx_front.png',
+        backImg: '/senators/04_onyx_back.png',
+        modelImg: '/models/senators/04_model.jpg',
+        modelCaption: 'Executive Model · 6\'3" wearing Midnight Onyx Cut (Size L)',
+        status: 'Bespoke Commission',
+        stockSlots: 3,
+        filter: 'none'
+      },
+      {
+        id: 'sapphire',
+        name: 'Royal Sapphire Navy',
+        hex: '#1c2841',
+        dotColor: '#1c2841',
+        frontImg: '/senators/05_sapphire_front.png',
+        backImg: '/senators/05_sapphire_back.png',
+        modelImg: '/models/senators/06_model.jpg',
+        modelCaption: 'Chamber Model · 6\'2" wearing Royal Sapphire Senator (Size M)',
+        status: 'Ready to Tailor',
+        stockSlots: 4,
+        filter: 'none'
+      },
+      {
+        id: 'camelback',
+        name: 'Sahara Camelback Tan',
+        hex: '#a3845c',
+        dotColor: '#a3845c',
+        frontImg: '/senators/06_camel_front.png',
+        backImg: '/senators/06_camel_back.png',
+        modelImg: '/models/senators/02_model.jpg',
+        modelCaption: 'Heritage Model · 6\'1" wearing Sahara Camelback Cut (Size M)',
+        status: 'Atelier Exclusive',
+        stockSlots: 3,
+        filter: 'none'
+      },
+      {
+        id: 'amethyst',
+        name: 'Noble Royal Amethyst',
+        hex: '#47214e',
+        dotColor: '#47214e',
+        frontImg: '/senators/07_amethyst_front.png',
+        backImg: '/senators/07_amethyst_back.png',
+        modelImg: '/models/senators/03_model.jpg',
+        modelCaption: 'Aristocrat Model · 6\'2" wearing Noble Royal Amethyst (Size L)',
+        status: 'Limited Reserve',
+        stockSlots: 2,
+        filter: 'none'
+      }
+    ]
   }
 ];
 

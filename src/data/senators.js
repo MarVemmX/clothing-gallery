@@ -186,7 +186,27 @@ export const SENATOR_COLLECTION = [
     leadTime: '4–6 Business Days',
     cut: 'Contemporary Short-Sleeve Tunic',
     collar: 'Round Neck with Keyhole Slit',
-    description: 'Distinctive dusty sage green Senator tunic cut with crisp short sleeves, keyhole neck slit, and five sharp architectural vertical accordion pleats down the right chest.'
+  },
+  {
+    id: 'senator-10',
+    code: '10',
+    title: 'Imperial Burgundy Senator',
+    series: 'Monarch Heritage Cut',
+    priceNaira: '₦180,000',
+    priceRaw: 180000,
+    colorName: 'Imperial Burgundy Wine',
+    dotColor: '#6b1d2f',
+    frontImg: '/senators/03_burgundy_front.png',
+    backImg: '/senators/03_burgundy_back.png',
+    status: 'Ready to Tailor',
+    stockInfo: 'In High Demand · 2 Slots Remaining',
+    fabric: 'Pure Merino Cashmere Suiting & Silk Accents',
+    embroidery: 'Champagne Silk Geometric Placket',
+    swatchName: 'Burgundy',
+    leadTime: '5–7 Business Days',
+    cut: 'Royal Classic Longline Tunic with Trouser Set',
+    collar: 'Piped Mandarin Standing Collar',
+    description: 'A commanding, aristocratic crimson-burgundy longline tunic featuring champagne geometric motifs engineered for gala evenings and national occasions.'
   }
 ];
 
