@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { GarmentDesign, ColorVariant, SizeOption } from '../types/clothing';
 import { SIZES } from '../data/clothing';
 import { playSoftClick, playFabricSwoosh } from '../utils/audio';
@@ -16,6 +16,7 @@ interface GarmentDetailPanelProps {
   onAddToCart: () => void;
   onOpenCommission: () => void;
   onBackToRail?: () => void;
+  onOpenSizeGuide?: () => void;
 }
 
 export default function GarmentDetailPanel({
@@ -28,8 +29,11 @@ export default function GarmentDetailPanel({
   setViewAngle,
   onAddToCart,
   onOpenCommission,
-  onBackToRail
+  onBackToRail,
+  onOpenSizeGuide
 }: GarmentDetailPanelProps) {
+  const [showCareNotes, setShowCareNotes] = useState(false);
+
   if (!garment) return null;
 
   const currentVariant = (activeColorVariant && garment.colorVariants.some(v => v.id === activeColorVariant.id))
@@ -138,11 +142,33 @@ export default function GarmentDetailPanel({
         </div>
       </div>
 
-      {/* Size Selector Box Row */}
+      {/* Size Selector Box Row with Interactive Size Guide Trigger */}
       <div className="detail-section-block">
         <div className="detail-section-header">
-          <span className="detail-section-title">Atelier Size</span>
-          <span className="detail-section-value">Chest {currentSize.chest} · Length {currentSize.length}</span>
+          <div>
+            <span className="detail-section-title">Atelier Size</span>
+            <span className="detail-section-value">Chest {currentSize.chest} · Length {currentSize.length}</span>
+          </div>
+
+          {onOpenSizeGuide && (
+            <button
+              type="button"
+              className="detail-size-guide-trigger"
+              onClick={() => {
+                playSoftClick();
+                onOpenSizeGuide();
+              }}
+              title="Open Atelier Measurement Guide"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21.3 15.3l-6.6-6.6a2 2 0 0 0-2.8 0L2.7 17.9a2 2 0 0 0 0 2.8l.6.6a2 2 0 0 0 2.8 0l9.2-9.2"></path>
+                <path d="m14.5 12.5 2-2"></path>
+                <path d="m11.5 15.5 2-2"></path>
+                <path d="m8.5 18.5 2-2"></path>
+              </svg>
+              <span>Size Guide</span>
+            </button>
+          )}
         </div>
 
         <div className="size-selector-row">
@@ -216,6 +242,28 @@ export default function GarmentDetailPanel({
           <span className="spec-label">Lead Time:</span>
           <span className="spec-val">{garment.leadTime}</span>
         </div>
+      </div>
+
+      {/* Expandable Craftsmanship & Garment Care */}
+      <div className="panel-care-toggle-block">
+        <button
+          type="button"
+          className="care-toggle-btn"
+          onClick={() => {
+            playSoftClick();
+            setShowCareNotes(prev => !prev);
+          }}
+        >
+          <span className="care-toggle-title">Artisanal Craftsmanship & Care</span>
+          <span className="care-toggle-icon">{showCareNotes ? '−' : '+'}</span>
+        </button>
+
+        {showCareNotes && (
+          <div className="care-notes-body">
+            <p><strong>Care:</strong> Specialist dry-clean only. Cool iron inside-out or vertical steam. Store on contoured wooden cedar hanger in breathable garment bag.</p>
+            <p><strong>Artisanal Guarantee:</strong> Each piece is individually pattern-drafted and hand-finished by master couturiers in our Lagos workshop using heritage tailoring techniques.</p>
+          </div>
+        )}
       </div>
 
       <p className="panel-order-info">

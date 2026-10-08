@@ -7,6 +7,7 @@ import GarmentStudioViewer from '../components/GarmentStudioViewer';
 import GarmentDetailPanel from '../components/GarmentDetailPanel';
 import BottomControls from '../components/BottomControls';
 import CommissionModal from '../components/CommissionModal';
+import SizeGuideModal from '../components/SizeGuideModal';
 import RealLifeModelCard from '../components/RealLifeModelCard';
 import CartDrawer from '../components/CartDrawer';
 import { CATEGORIES, SIZES, getGarmentsByCategory, ALL_GARMENTS } from '../data/clothing';
@@ -68,6 +69,7 @@ export default function Home() {
 
   // Modal & Cart States
   const [isCommissionOpen, setIsCommissionOpen] = useState(false);
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
@@ -296,7 +298,7 @@ export default function Home() {
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (isCommissionOpen || isCartOpen) return;
+      if (isCommissionOpen || isCartOpen || isSizeGuideOpen) return;
 
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
@@ -327,7 +329,9 @@ export default function Home() {
           handleSlideNext();
         }
       } else if (e.key === 'Escape') {
-        if (isCartOpen) {
+        if (isSizeGuideOpen) {
+          setIsSizeGuideOpen(false);
+        } else if (isCartOpen) {
           setIsCartOpen(false);
         } else if (selectedGarment) {
           handleBackToRail();
@@ -342,6 +346,7 @@ export default function Home() {
     visibleGarments,
     selectedGarment,
     isCommissionOpen,
+    isSizeGuideOpen,
     isCartOpen,
     handleSlideNext,
     handleSlidePrev,
@@ -558,6 +563,7 @@ export default function Home() {
               onAddToCart={handleAddToCart}
               onOpenCommission={() => setIsCommissionOpen(true)}
               onBackToRail={handleBackToRail}
+              onOpenSizeGuide={() => setIsSizeGuideOpen(true)}
             />
           </div>
         </section>
@@ -596,6 +602,17 @@ export default function Home() {
         garment={selectedGarment}
         selectedSize={currentSize}
         activeColorVariant={activeColorVariant}
+      />
+
+      {/* 7. BESPOKE SIZE GUIDE & MEASUREMENT MATRIX */}
+      <SizeGuideModal
+        isOpen={isSizeGuideOpen}
+        onClose={() => setIsSizeGuideOpen(false)}
+        categoryLabel={selectedGarment?.categoryLabel}
+        onOpenCommission={() => {
+          setIsSizeGuideOpen(false);
+          setIsCommissionOpen(true);
+        }}
       />
     </main>
   );

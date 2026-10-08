@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { GarmentDesign, ColorVariant, SizeOption } from '../types/clothing';
-import { playFabricSwoosh } from '../utils/audio';
+import { playFabricSwoosh, playLensZoom, playTurntableWhir } from '../utils/audio';
 
 interface GarmentStudioViewerProps {
   garment: GarmentDesign;
@@ -24,16 +24,28 @@ export default function GarmentStudioViewer({
 }: GarmentStudioViewerProps) {
   const [turnAngle, setTurnAngle] = useState(viewAngle === 'back' ? 180 : 0);
   const [isDragging, setIsDragging] = useState(false);
+  const [isSpinning, setIsSpinning] = useState(false);
   const dragStartXRef = useRef(0);
   const startAngleRef = useRef(0);
   const hasDraggedRef = useRef(false);
+
+  // Fabric Loupe Magnifier state
+  const [isLoupeActive, setIsLoupeActive] = useState(false);
+  const [loupeData, setLoupeData] = useState({
+    x: 0,
+    y: 0,
+    percentX: 50,
+    percentY: 50,
+    visible: false
+  });
+  const stageRef = useRef<HTMLDivElement>(null);
 
   const [displayFace, setDisplayFace] = useState<'front' | 'back'>(viewAngle);
   const flipTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Sync turnAngle and displayFace when viewAngle prop changes (e.g. from buttons)
   useEffect(() => {
-    if (isDragging) return;
+    if (isDragging || isSpinning) return;
 
     if (flipTimerRef.current) {
       clearTimeout(flipTimerRef.current);
@@ -48,13 +60,11 @@ export default function GarmentStudioViewer({
 
     if (viewAngle === 'back') {
       setTurnAngle(180);
-      // Switch image at the midpoint (200ms) when card is edge-on at 90°
       flipTimerRef.current = setTimeout(() => {
         setDisplayFace('back');
       }, 200);
     } else {
       setTurnAngle(0);
-      // Switch image at the midpoint (200ms) when card is edge-on at 90°
       flipTimerRef.current = setTimeout(() => {
         setDisplayFace('front');
       }, 200);
@@ -65,11 +75,11 @@ export default function GarmentStudioViewer({
         clearTimeout(flipTimerRef.current);
       }
     };
-  }, [viewAngle, isDragging, motionEnabled]);
+  }, [viewAngle, isDragging, isSpinning, motionEnabled]);
 
   // Pointer drag to turn 360 degrees
   const handlePointerDown = (e: React.PointerEvent) => {
-    if (!motionEnabled) return;
+    if (!motionEnabled || isSpinning || isLoupeActive) return;
     e.preventDefault();
     setIsDragging(true);
     hasDraggedRef.current = false;
@@ -81,19 +91,42 @@ export default function GarmentStudioViewer({
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
+    // Loupe tracking
+    if (isLoupeActive && stageRef.current) {
+      const rect = stageRef.current.getBoundingClientRect();
+      const clientX = e.clientX;
+      const clientY = e.clientY;
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+
+      if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+        const percentX = Math.max(0, Math.min(100, (x / rect.width) * 100));
+        const percentY = Math.max(0, Math.min(100, (y / rect.height) * 100));
+        setLoupeData({ x, y, percentX, percentY, visible: true });
+      } else {
+        setLoupeData(prev => ({ ...prev, visible: false }));
+      }
+      return;
+    }
+
+    // 3D drag rotation
     if (!isDragging) return;
     const deltaX = e.clientX - dragStartXRef.current;
     if (Math.abs(deltaX) > 4) {
       hasDraggedRef.current = true;
     }
     const nextAngle = startAngleRef.current + deltaX * 0.55;
-    // Normalize between -180 and 180 for intuitive rotation
     const normalized = Math.max(-180, Math.min(180, nextAngle));
     setTurnAngle(normalized);
     setDisplayFace(Math.abs(normalized) >= 90 ? 'back' : 'front');
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
+    if (isLoupeActive) {
+      setLoupeData(prev => ({ ...prev, visible: false }));
+      return;
+    }
+
     if (!isDragging) return;
     setIsDragging(false);
     try {
@@ -111,6 +144,51 @@ export default function GarmentStudioViewer({
       setDisplayFace('front');
       setViewAngle('front');
     }
+  };
+
+  // 360° Automatic Turntable Spin
+  const handleAutoSpin = useCallback(() => {
+    if (isSpinning) return;
+    setIsSpinning(true);
+    setIsLoupeActive(false);
+    playTurntableWhir();
+
+    const start = turnAngle;
+    const target = start + 360;
+    const duration = 1200;
+    const startTime = performance.now();
+
+    const animateSpin = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(1, elapsed / duration);
+      // Smooth cubic ease-in-out
+      const ease = progress < 0.5
+        ? 4 * progress * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+      const current = start + (target - start) * ease;
+      const normalizedAngle = ((current + 180) % 360) - 180;
+      setTurnAngle(current % 360);
+      setDisplayFace(Math.abs(normalizedAngle) >= 90 ? 'back' : 'front');
+
+      if (progress < 1) {
+        requestAnimationFrame(animateSpin);
+      } else {
+        setTurnAngle(0);
+        setDisplayFace('front');
+        setViewAngle('front');
+        setIsSpinning(false);
+      }
+    };
+
+    requestAnimationFrame(animateSpin);
+  }, [turnAngle, isSpinning, setViewAngle]);
+
+  // Toggle Fabric Loupe
+  const handleToggleLoupe = () => {
+    playLensZoom();
+    setIsLoupeActive(prev => !prev);
+    setLoupeData(prev => ({ ...prev, visible: false }));
   };
 
   // Resolve active variant & images
@@ -134,12 +212,14 @@ export default function GarmentStudioViewer({
     <div className="studio-viewer-container" aria-label={`${garment.title} 360° garment viewer`}>
       {/* 3D Turntable Stage */}
       <div
-        className="studio-turntable-stage"
+        ref={stageRef}
+        className={`studio-turntable-stage ${isLoupeActive ? 'loupe-mode-active' : ''}`}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
-        title="Click & drag horizontally to turn 360°"
+        onPointerLeave={() => setLoupeData(prev => ({ ...prev, visible: false }))}
+        title={isLoupeActive ? "Hover over garment to inspect weave in 2.2× optical zoom" : "Click & drag horizontally to turn 360°"}
       >
         {/* Boutique Wall Mount Rail Rack Fixture - directly behind & under the hanger hook throat */}
         <div className="studio-hanger-fixture" aria-hidden="true">
@@ -182,45 +262,106 @@ export default function GarmentStudioViewer({
             </div>
           </div>
         </div>
+
+        {/* High-Definition Optical Fabric Loupe */}
+        {isLoupeActive && loupeData.visible && (
+          <div
+            className="studio-fabric-loupe"
+            style={{
+              left: `${loupeData.x}px`,
+              top: `${loupeData.y}px`,
+              backgroundImage: `url(${activeSrc})`,
+              backgroundPosition: `${loupeData.percentX}% ${loupeData.percentY}%`,
+              filter: fabricFilter
+            }}
+            aria-hidden="true"
+          >
+            <div className="loupe-reticle" />
+            <span className="loupe-badge">2.2× WEAVE</span>
+          </div>
+        )}
       </div>
 
       {/* Quick Visual Controls under the Garment */}
       <div className="studio-view-toggle-bar">
         <div className="studio-toggle-group">
+          {/* Front View */}
           <button
             type="button"
-            className={`studio-angle-btn ${viewAngle === 'front' ? 'active' : ''}`}
+            className={`studio-angle-btn ${viewAngle === 'front' && !isLoupeActive ? 'active' : ''}`}
             onClick={() => {
               playFabricSwoosh();
               setViewAngle('front');
               setTurnAngle(0);
+              setIsLoupeActive(false);
             }}
-            aria-pressed={viewAngle === 'front'}
+            aria-pressed={viewAngle === 'front' && !isLoupeActive}
+            title="Front silhouette view"
           >
             <span className="angle-btn-dot" />
-            <span>Front View</span>
+            <span>Front</span>
           </button>
 
+          {/* Back View */}
           <button
             type="button"
-            className={`studio-angle-btn ${viewAngle === 'back' ? 'active' : ''}`}
+            className={`studio-angle-btn ${viewAngle === 'back' && !isLoupeActive ? 'active' : ''}`}
             onClick={() => {
               playFabricSwoosh();
               setViewAngle('back');
               setTurnAngle(180);
+              setIsLoupeActive(false);
             }}
-            aria-pressed={viewAngle === 'back'}
+            aria-pressed={viewAngle === 'back' && !isLoupeActive}
+            title="Back silhouette view"
           >
             <span className="angle-btn-dot" />
-            <span>Back View</span>
+            <span>Back</span>
+          </button>
+
+          {/* 360° Auto Spin Button */}
+          <button
+            type="button"
+            className={`studio-angle-btn ${isSpinning ? 'spinning-active' : ''}`}
+            onClick={handleAutoSpin}
+            disabled={isSpinning}
+            title="Automatic 360° carousel rotation"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className={isSpinning ? "animate-spin-fast" : ""}>
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+            </svg>
+            <span>360° Spin</span>
+          </button>
+
+          {/* Fabric Weave Loupe / Magnifier */}
+          <button
+            type="button"
+            className={`studio-angle-btn ${isLoupeActive ? 'active loupe-button' : ''}`}
+            onClick={handleToggleLoupe}
+            title="Inspect fabric weave and embroidery in 2.2× optical zoom"
+            aria-pressed={isLoupeActive}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <line x1="11" y1="8" x2="11" y2="14"></line>
+              <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+            <span>{isLoupeActive ? 'Exit Lens' : 'Weave Zoom'}</span>
           </button>
         </div>
 
         <div className="studio-drag-hint">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-spin-slow">
-            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
-          </svg>
-          <span>Drag outfit to turn 360°</span>
+          {isLoupeActive ? (
+            <span>Move cursor over garment to magnify threads</span>
+          ) : (
+            <>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14 9l6 6-6 6M10 15L4 9l6-6" />
+              </svg>
+              <span>Drag horizontally to rotate</span>
+            </>
+          )}
         </div>
       </div>
     </div>

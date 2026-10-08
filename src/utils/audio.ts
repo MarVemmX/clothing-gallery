@@ -175,3 +175,62 @@ export function playSoftClick(): void {
     // Graceful fallback
   }
 }
+
+// Subtle optical glass resonance for fabric zoom inspection loupe
+export function playLensZoom(): void {
+  if (!soundEnabled) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  try {
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1850, now);
+    osc.frequency.exponentialRampToValueAtTime(2400, now + 0.05);
+
+    gain.gain.setValueAtTime(0.025, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.07);
+  } catch {
+    // Graceful fallback
+  }
+}
+
+// Gentle acoustic whir for smooth 360-degree turntable full rotation
+export function playTurntableWhir(): void {
+  if (!soundEnabled) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  try {
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(320, now);
+    osc.frequency.linearRampToValueAtTime(480, now + 0.3);
+    osc.frequency.exponentialRampToValueAtTime(260, now + 0.7);
+
+    gain.gain.setValueAtTime(0.015, now);
+    gain.gain.linearRampToValueAtTime(0.025, now + 0.2);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.75);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.8);
+  } catch {
+    // Graceful fallback
+  }
+}
+
