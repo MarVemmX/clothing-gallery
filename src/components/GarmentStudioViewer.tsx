@@ -347,7 +347,7 @@ export default function GarmentStudioViewer({
               <line x1="11" y1="8" x2="11" y2="14"></line>
               <line x1="8" y1="11" x2="14" y2="11"></line>
             </svg>
-            <span>{isLoupeActive ? 'Exit Lens' : 'Weave Zoom'}</span>
+            <span className="loupe-btn-label">{isLoupeActive ? 'Exit Lens' : 'Weave Zoom'}</span>
           </button>
         </div>
 

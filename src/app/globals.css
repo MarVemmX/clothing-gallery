@@ -1166,6 +1166,7 @@ html, body {
   background: transparent;
   border: none;
   cursor: pointer;
+  white-space: nowrap;
   transition: all 0.2s ease;
 }
 
@@ -2278,6 +2279,35 @@ html, body {
   .studio-garment-image {
     max-height: 310px;
   }
+  .studio-view-toggle-bar {
+    margin-top: 8px;
+    gap: 6px;
+  }
+  .studio-toggle-group {
+    padding: 2.5px;
+    gap: 2px;
+    max-width: 100%;
+  }
+  .studio-angle-btn {
+    padding: 5px 8px;
+    font-size: 9.5px;
+    gap: 3px;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+  }
+  .studio-angle-btn svg {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+  }
+  .studio-angle-btn.loupe-button {
+    font-size: 9px;
+    padding: 5px 7px;
+  }
+  .loupe-btn-label {
+    white-space: nowrap;
+    font-size: 9px;
+  }
   .studio-detail-column {
     flex: 0 0 auto;
     width: 100%;
@@ -2516,6 +2546,28 @@ html, body {
   }
   .studio-garment-image {
     max-height: 275px;
+  }
+  .studio-toggle-group {
+    padding: 2px;
+    gap: 1.5px;
+  }
+  .studio-angle-btn {
+    padding: 4px 6px;
+    font-size: 9px;
+    gap: 2.5px;
+    white-space: nowrap;
+  }
+  .studio-angle-btn svg {
+    width: 9px;
+    height: 9px;
+  }
+  .studio-angle-btn.loupe-button {
+    font-size: 8.5px;
+    padding: 4px 5px;
+  }
+  .loupe-btn-label {
+    white-space: nowrap;
+    font-size: 8.5px;
   }
   .model-card-dock {
     left: 10px;

@@ -27,6 +27,14 @@ export const metadata: Metadata = {
   title: "ÀRÈWÀ · Bespoke English Suits, Streetwear, Denim & Royal Senators",
   description: "Luxury menswear atelier showcasing bespoke English suits, peak-lapel tuxedos, Japanese selvedge denim, heavy streetwear, and royal Nigerian Senators with interactive 3D showroom rail.",
   keywords: ["English bespoke suits", "Tuxedo", "Japanese selvedge denim", "Luxury streetwear", "Nigerian Senator wear", "Lagos atelier fashion"],
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.png", type: "image/png" },
+      { url: "/favicon.ico" }
+    ],
+    apple: "/favicon.png"
+  }
 };
 
 export default function RootLayout({
