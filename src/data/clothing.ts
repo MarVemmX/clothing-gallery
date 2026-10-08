@@ -491,19 +491,21 @@ export const ALL_GARMENTS: GarmentDesign[] = [
         modelImg: '/models/senators/01_model.jpg',
         modelCaption: 'Monarch Model · 6\'2" wearing Kano Terracotta Senator (Size L)',
         status: 'Ready to Tailor',
-        stockSlots: 4
+        stockSlots: 4,
+        filter: 'none'
       },
       {
         id: 'ivory',
         name: 'Pristine Royal Ivory',
         hex: '#eae6dd',
         dotColor: '#eae6dd',
-        frontImg: '/senators/07_ivory_front.png',
-        backImg: '/senators/07_ivory_back.png',
-        modelImg: '/models/senators/07_model.jpg',
+        frontImg: '/senators/01_terracotta_front.png',
+        backImg: '/senators/01_terracotta_back.png',
+        modelImg: '/models/senators/01_model.jpg',
         modelCaption: 'Monarch Model · 6\'2" wearing Royal Ivory Cut',
         status: 'Bespoke Order',
-        stockSlots: 3
+        stockSlots: 3,
+        filter: 'brightness(2.6) sepia(0.25) saturate(0.35) contrast(0.95)'
       }
     ]
   },
@@ -534,19 +536,21 @@ export const ALL_GARMENTS: GarmentDesign[] = [
         modelImg: '/models/senators/02_model.jpg',
         modelCaption: 'Heritage Model · 6\'1" wearing Savannah Ochre Senator (Size M)',
         status: 'Ready to Tailor',
-        stockSlots: 3
+        stockSlots: 3,
+        filter: 'none'
       },
       {
         id: 'emerald',
         name: 'Caliphate Emerald Green',
         hex: '#1d4a32',
         dotColor: '#1d4a32',
-        frontImg: '/senators/02_emerald_front.png',
-        backImg: '/senators/02_emerald_back.png',
+        frontImg: '/senators/02_ochre_front.png',
+        backImg: '/senators/02_ochre_back.png',
         modelImg: '/models/senators/02_model.jpg',
         modelCaption: 'Heritage Model · 6\'1" wearing Emerald Green Variant',
         status: 'Limited Edition',
-        stockSlots: 2
+        stockSlots: 2,
+        filter: 'hue-rotate(85deg) saturate(1.4) brightness(0.62) contrast(1.15)'
       }
     ]
   },
@@ -577,19 +581,21 @@ export const ALL_GARMENTS: GarmentDesign[] = [
         modelImg: '/models/senators/03_model.jpg',
         modelCaption: 'Aristocrat Model · 6\'2" wearing Sovereign Lavender (Size M)',
         status: 'Atelier Signature',
-        stockSlots: 3
+        stockSlots: 3,
+        filter: 'none'
       },
       {
         id: 'burgundy',
         name: 'Deep Imperial Burgundy',
         hex: '#6b1d2f',
         dotColor: '#6b1d2f',
-        frontImg: '/senators/03_burgundy_front.png',
-        backImg: '/senators/03_burgundy_back.png',
-        modelImg: '/models/senators/05_model.jpg',
+        frontImg: '/senators/03_lavender_front.png',
+        backImg: '/senators/03_lavender_back.png',
+        modelImg: '/models/senators/03_model.jpg',
         modelCaption: 'Aristocrat Model · 6\'2" wearing Imperial Burgundy Variant',
         status: 'Ready to Tailor',
-        stockSlots: 4
+        stockSlots: 4,
+        filter: 'hue-rotate(290deg) saturate(2.4) brightness(0.42) contrast(1.25)'
       }
     ]
   },
@@ -620,19 +626,21 @@ export const ALL_GARMENTS: GarmentDesign[] = [
         modelImg: '/models/senators/04_model.jpg',
         modelCaption: 'Chamber Model · 6\'3" wearing Obsidian Origami Senator (Size L)',
         status: 'Bespoke Commission',
-        stockSlots: 2
+        stockSlots: 2,
+        filter: 'none'
       },
       {
         id: 'onyx-black',
         name: 'Deep Midnight Onyx',
         hex: '#111215',
         dotColor: '#111215',
-        frontImg: '/senators/04_onyx_front.png',
-        backImg: '/senators/04_onyx_back.png',
+        frontImg: '/senators/04_obsidian_front.png',
+        backImg: '/senators/04_obsidian_back.png',
         modelImg: '/models/senators/04_model.jpg',
         modelCaption: 'Chamber Model · 6\'3" wearing Midnight Onyx Cut',
         status: 'Bespoke Order',
-        stockSlots: 3
+        stockSlots: 3,
+        filter: 'brightness(0.48) contrast(1.35)'
       }
     ]
   },
@@ -663,19 +671,21 @@ export const ALL_GARMENTS: GarmentDesign[] = [
         modelImg: '/models/senators/05_model.jpg',
         modelCaption: 'Heritage Model · 6\'2" wearing Zaria Crimson Monarch (Size L)',
         status: 'In High Demand',
-        stockSlots: 2
+        stockSlots: 2,
+        filter: 'none'
       },
       {
         id: 'sapphire',
         name: 'Royal Sapphire Blue',
         hex: '#1e3863',
         dotColor: '#1e3863',
-        frontImg: '/senators/05_sapphire_front.png',
-        backImg: '/senators/05_sapphire_back.png',
-        modelImg: '/models/senators/06_model.jpg',
+        frontImg: '/senators/05_burgundy_front.png',
+        backImg: '/senators/05_burgundy_back.png',
+        modelImg: '/models/senators/05_model.jpg',
         modelCaption: 'Heritage Model · 6\'2" wearing Sapphire Blue Monarch',
         status: 'Ready to Tailor',
-        stockSlots: 3
+        stockSlots: 3,
+        filter: 'hue-rotate(185deg) saturate(1.9) brightness(0.88) contrast(1.1)'
       }
     ]
   },
@@ -706,19 +716,21 @@ export const ALL_GARMENTS: GarmentDesign[] = [
         modelImg: '/models/senators/06_model.jpg',
         modelCaption: 'Senate Model · 6\'2" wearing Abuja Sunburst Senator (Size M)',
         status: 'Pre-order Open',
-        stockSlots: 5
+        stockSlots: 5,
+        filter: 'none'
       },
       {
         id: 'camel',
         name: 'Royal Camel Tan',
         hex: '#a3845c',
         dotColor: '#a3845c',
-        frontImg: '/senators/06_camel_front.png',
-        backImg: '/senators/06_camel_back.png',
+        frontImg: '/senators/06_navy_sunburst_front.png',
+        backImg: '/senators/06_navy_sunburst_back.png',
         modelImg: '/models/senators/06_model.jpg',
         modelCaption: 'Senate Model · 6\'2" wearing Camel Tan Sunburst',
         status: 'Ready to Tailor',
-        stockSlots: 4
+        stockSlots: 4,
+        filter: 'sepia(0.85) hue-rotate(345deg) saturate(1.6) brightness(1.3) contrast(1.05)'
       }
     ]
   },
@@ -749,19 +761,21 @@ export const ALL_GARMENTS: GarmentDesign[] = [
         modelImg: '/models/senators/07_model.jpg',
         modelCaption: 'Statesman Model · 6\'2" wearing Calabar Pearl Statesman (Size L)',
         status: 'Hand-Tailored Reserve',
-        stockSlots: 2
+        stockSlots: 2,
+        filter: 'none'
       },
       {
         id: 'amethyst',
         name: 'Noble Royal Amethyst',
         hex: '#5c3866',
         dotColor: '#5c3866',
-        frontImg: '/senators/07_amethyst_front.png',
-        backImg: '/senators/07_amethyst_back.png',
+        frontImg: '/senators/07_ivory_front.png',
+        backImg: '/senators/07_ivory_back.png',
         modelImg: '/models/senators/07_model.jpg',
         modelCaption: 'Statesman Model · 6\'2" wearing Noble Amethyst',
         status: 'Limited Reserve',
-        stockSlots: 3
+        stockSlots: 3,
+        filter: 'sepia(0.55) hue-rotate(250deg) saturate(2.2) brightness(0.48) contrast(1.2)'
       }
     ]
   },
